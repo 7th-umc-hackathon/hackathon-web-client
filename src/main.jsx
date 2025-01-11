@@ -2,18 +2,29 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App.jsx';
 import GlobalStyle from './styles/GlobalStyles.jsx';
-import { BrowserRouter } from 'react-router-dom';
-import Footer from './components/common/Footer.jsx';
+import { BrowserRouter, useLocation } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components'; // ThemeProvider 추가
 import theme from './styles/theme';
+import Navbar from './components/common/Navbar.jsx';
+
+const Main = () => {
+    const location = useLocation();
+    const isCapturePage = location.pathname === '/capture'; // Navbar를 숨길 경로 확인
+
+    return (
+        <>
+            <GlobalStyle />
+            {!isCapturePage && <Navbar />} {/* /capture 경로가 아니면 Navbar 렌더링 */}
+            <App />
+        </>
+    );
+};
 
 createRoot(document.getElementById('root')).render(
     <StrictMode>
         <ThemeProvider theme={theme}>
             <BrowserRouter>
-                <GlobalStyle />
-                <App />
-                <Footer />
+                <Main />
             </BrowserRouter>
         </ThemeProvider>
     </StrictMode>
