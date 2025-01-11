@@ -13,7 +13,17 @@ const GlobalStyles = createGlobalStyle`
          url(${NotoSansBold}) format('woff');
     font-style: normal;
   }
-
+ :root {
+    --main-color: #41FA94;
+    --secondary-color: #6DBBFF;
+    --base-color: #F4F4F4;
+    --gray1-color: #333333;
+    --gray2-color: #4f4f4f;
+    --gray3-color: #828282;
+    --gray4-color: #bdbdbd;
+    --gray5-color: #e0e0e0;
+    --gray6-color: #f2f2f2;
+  }
   *, *::before, *::after {
     box-sizing: border-box;
   }
