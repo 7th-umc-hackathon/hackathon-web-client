@@ -30,30 +30,34 @@ export default function CapturePage() {
     };
 
     const submitImage = async () => {
-        // if (!capturedImage) return;
+        if (!capturedImage) return;
 
-        // try {
-        //     const response = await fetch('http://test2.shop:42021/relays/mission/complete', {
-        //         method: 'POST',
-        //         headers: { 'Content-Type': 'application/json' },
-        //         body: JSON.stringify({ image: capturedImage }),
-        //     });
+        try {
+            const formData = new FormData();
 
-        //     const result = await response.json();
-        //     if (result.success) {
-        //         setIsOkModalOpen(true);
-        //     } else {
-        //         setIsFailModalOpen(true);
-        //     }
-        // } catch (error) {
-        //     console.error('서버 전송 오류:', error);
-        //     setIsFailModalOpen(true);
-        // }
+            formData.append('image', capturedImage);
+            formData.append('mission', '페트병 3개 줍기'); // TODO: localStorage로 사용자의가장 최근 미션 내용 꺼내서 삽입하여 요청 보내기
 
-        // 여기를 조절하여 Modal 오픈 상태 확인 가능!
-        // setIsOkModalOpen(true);
-        setIsFailModalOpen(true);
+            const response = await fetch('http://test2.shop:42021/relays/mission/complete', {
+                method: 'POST',
+                body: formData,
+            });
+
+            const result = await response.json();
+
+            // 정확하게 result 값을 비교
+            if (result.success && result.success.result === "True") {
+                setIsOkModalOpen(true);
+            } else {
+                setIsFailModalOpen(true);
+                // setIsOkModalOpen(true);
+            }
+        } catch (error) {
+            console.error('서버 전송 오류:', error);
+            setIsFailModalOpen(true);
+        }
     };
+
 
     return (
         <Container>

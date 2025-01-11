@@ -1,4 +1,6 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
+
 import Modal from '../components/Modal';
 import CustomColumn from '../components/CustomColumn';
 import CustomFont from '../components/CustomFont';
@@ -9,6 +11,12 @@ import failIcon from '../../../assets/icon_mission_fail.svg';
 
 const FailureModal = ({ isOpen, onClose }) => {
     if (!isOpen) return null;
+    const navigate = useNavigate();
+
+    const handleRetry = () => {
+        onClose();
+        navigate('/premain');
+    }
 
     return (
         <Modal isOpen={isOpen} onClose={onClose}>
@@ -19,7 +27,7 @@ const FailureModal = ({ isOpen, onClose }) => {
                     <CustomFont $font='1rem' $color='#666666' $fontWeight='bold'>아직 시간이 있어요, 다시 시도해보아요!</CustomFont>
                 </CustomColumn>
 
-                <CustomButton $width='90%' $backgroundColor='#3ee187' onClick={onClose} $padding='1rem'>
+                <CustomButton $width='90%' $backgroundColor='#3ee187' $padding='1rem' onClick={handleRetry}>
                     <CustomFont $color='white' $font='1rem' $fontWeight='bold'>다시 시도하기</CustomFont>
                 </CustomButton>
             </CustomColumn>
