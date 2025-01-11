@@ -9,12 +9,12 @@ import Navbar from './components/common/Navbar.jsx';
 
 const Main = () => {
     const location = useLocation();
-    const isCapturePage = location.pathname === '/capture'; // Navbar를 숨길 경로 확인
+    const isNavbarHidden = ['/capture', '/'].includes(location.pathname); // Navbar를 숨길 경로 확인
 
     return (
         <>
             <GlobalStyle />
-            {!isCapturePage && <Navbar />} {/* /capture 경로가 아니면 Navbar 렌더링 */}
+            {!isNavbarHidden && <Navbar />} {/* 특정 경로가 아니라면 Navbar 렌더링 */}
             <App />
         </>
     );
