@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import styled from "styled-components";
 import theme from "../styles/theme";
+import BackIcon2 from "../assets/icon/back-icon2.svg";
 import CheckedIcon from "../assets/icon/checked-icon.svg";
 import UncheckedIcon from "../assets/icon/unchecked-icon.svg";
 import apiClient from "../services/api";
@@ -65,6 +66,12 @@ function JoinRelay() {
 
   return (
     <Container>
+      <TopBar>
+        <BackButton onClick={() => navigate(-1)}>
+          <BackIconImg src={BackIcon2} alt="Back Icon" />
+          <TopTitle>이어달리기 만들기</TopTitle>
+        </BackButton>
+      </TopBar>
       <ContentContainer>
         <FirstStepContainer>
           <p id="first-step-msg">Step 1.</p>
@@ -142,9 +149,28 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-between;
-  padding: 20px;
   background-color: white;
+`;
+
+const TopBar = styled.div`
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  align-self: flex-start;
+  flex-direction: row;
+  height: 60px;
+  padding: 1rem;
+  gap: 1rem;
+  color: black;
+  width: 360px;
+  padding: 0px 104px 0px 20px;
+`;
+
+const TopTitle = styled.div`
+  flex: 1;
+  text-align: center;
+  font-weight: bold;
+  font-size: 18px;
 `;
 
 const ContentContainer = styled.div`
@@ -152,7 +178,6 @@ const ContentContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 28px;
-  margin-top: 96px;
 `;
 const FirstStepContainer = styled.div`
   display: flex;
@@ -331,6 +356,8 @@ const Checkbox = styled.img`
 `;
 
 const MakeRelay = styled.div`
+  position: absolute;
+  top: 617px;
   width: 320px;
   height: 47px;
   border-radius: 12px;
@@ -357,7 +384,6 @@ const MissionBox = styled.div`
 `;
 
 const ConfirmMissionBtn = styled.button`
-  margin-top: 20px;
   width: 320px;
   height: 33px;
   background-color: ${theme.colors.main};
@@ -369,4 +395,15 @@ const ConfirmMissionBtn = styled.button`
   font-weight: bold;
 `;
 
+export const BackButton = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  gap: 40px;
+  cursor: pointer;
+`;
+
+export const BackIconImg = styled.img`
+  margin-top: 2px;
+`;
 export default JoinRelay;
