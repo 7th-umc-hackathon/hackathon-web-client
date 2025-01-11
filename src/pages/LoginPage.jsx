@@ -117,13 +117,6 @@ const Input = styled.input`
   }
 `;
 
-const Button = styled.button`
-  border: none;
-  border-radius: 4px;
-  color: var(--gray4-color);
-  cursor: pointer;
-`;
-
 const PasswordWrapper = styled.div`
   position: relative;
   display: flex;
@@ -131,7 +124,6 @@ const PasswordWrapper = styled.div`
 `;
 const PasswordIcon = styled.img`
   width: 15px;
-  height: 15px;
   cursor: pointer;
   position: absolute;
   right: 10px;
@@ -139,11 +131,19 @@ const PasswordIcon = styled.img`
   z-index: 1;
 `;
 
+const Button = styled.button`
+  border: none;
+  border-radius: 4px;
+  color: var(--gray4-color);
+  cursor: pointer;
+`;
+
 const EtcContainer = styled.div`
   display: flex;
   justify-content: center;
   margin-top: 10px;
 `;
+
 const EtcText = styled.div`
   padding: 0 10px;
   font-size: 12px;

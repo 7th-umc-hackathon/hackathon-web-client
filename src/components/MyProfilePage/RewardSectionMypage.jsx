@@ -1,12 +1,12 @@
 import styled from 'styled-components';
 
-const RewardSectionWithSettings = ({ name = '기니피그', points = 0, countryRank = 0, personalRank = 0, profileImage = '/default-profile.png', onClick  }) => {
+const RewardSectionWithSettings = ({ name, points, countryRank, personalRank, profileImage, onClick  }) => {
     return (
         <Container>
 
             <TopSection>
                 <ProfileContainer>
-                    <ProfileImage src={'../../assets/HomeIcon.svg'} alt={`${name}의 프로필`} />
+                    <ProfileImage src={''} alt={`${name}의 프로필`} />
                     <UserName>{name}</UserName>
                 </ProfileContainer>
                 <SettingsButton onClick={onClick}>⚙️</SettingsButton>
