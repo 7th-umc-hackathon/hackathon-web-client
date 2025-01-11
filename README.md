@@ -1,4 +1,4 @@
-# 동4무소 - Frontend 🌏
+# Frontend 🌏
 
 <b>[UMC 7th HACKATHON U조] Client</b>
 <br/>
