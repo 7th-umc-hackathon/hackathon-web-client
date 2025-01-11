@@ -5,13 +5,16 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import BackIcon from '../../assets/icon/back-icon.svg';
 import CaptureButtonIcon from '../../assets/icon/capture-button.svg';
 
+import StyledImg from './components/StyledImg';
+
 export default function CapturePage() {
     const location = useLocation();
     const { missionTitle } = location.state || {}; // 전달된 missionTitle 가져오기
 
     const webcamRef = useRef(null);
     const [capturedImage, setCapturedImage] = useState(null);
-    const [isMissionSuccess, setIsMissionSuccess] = useState(null);
+    // const [isMissionSuccess, setIsMissionSuccess] = useState(null);
+    const isMissionSuccess = true;
     const navigate = useNavigate();
 
     // 사진 촬영
@@ -32,10 +35,10 @@ export default function CapturePage() {
             });
 
             const result = await response.json();
-            setIsMissionSuccess(result.success);
+            // setIsMissionSuccess(result.success);
         } catch (error) {
             console.error('서버 전송 오류:', error);
-            setIsMissionSuccess(false);
+            // setIsMissionSuccess(false);
         }
     };
 
@@ -66,15 +69,15 @@ export default function CapturePage() {
                             audio={false}
                             screenshotFormat="image/jpeg"
                             videoConstraints={{
-                                width: 360,
-                                height: 536,
+                                width: 400,
+                                height: 600,
                                 facingMode: 'environment', // 후면 카메라 우선
                             }}
                         />
                     </WebcamContainer>
                     <BottomBar>
                         <CaptureButton onClick={captureImage}>
-                            <CaptureButtonImg src={CaptureButtonIcon} alt="Capture Button" />
+                            <StyledImg src={CaptureButtonIcon} width='5rem' height='5rem' />
                         </CaptureButton>
                     </BottomBar>
                 </>
@@ -88,6 +91,7 @@ const Container = styled.div`
     flex-direction: column;
     background-color: #000; /* 어두운 톤 */
     color: #fff;
+    height: 100vh;
 `;
 
 const TopBar = styled.div`
@@ -95,10 +99,10 @@ const TopBar = styled.div`
     align-items: center;
     background: var(--Gray-1, #333);
     display: flex;
-    height: 60px;
-    padding: 8px 94px 8px 20px;
+    height: 7rem;
+    padding: 1rem;
     align-items: center;
-    gap: 50px;
+    gap: 1rem;
     flex-shrink: 0;
     color: #fff;
 `;
@@ -122,22 +126,24 @@ const WebcamContainer = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 360px;
-    height: 607px;
+    width: 100%;
+    height: 100vh;
 `;
 
 const BottomBar = styled.div`
-    width: 360px;
-    height: 72px;
+    width: 100%;
+    height: 7rem;
     background: var(--Gray-1, #333);
     display: flex;
     justify-content: center;
     align-items: center;
 `;
 
-const CaptureButton = styled.button``;
-
-const CaptureButtonImg = styled.img``;
+const CaptureButton = styled.button`
+    width: 100%;
+    height: 7rem;
+    padding: 0;
+`;
 
 const PreviewContainer = styled.div`
     display: flex;
@@ -148,20 +154,20 @@ const PreviewContainer = styled.div`
 `;
 
 const PreviewImage = styled.img`
-    width: 360px;
-    height: 536px;
-    margin-bottom: 20px;
+    width: 400px;
+    height: 600px;
 `;
 
 const SubmitButton = styled.button`
-    padding: 10px 20px;
+    padding: 1rem;
     background-color: #3ee187;
     border: none;
-    border-radius: 8px;
+    border-radius: 0.5rem;
     color: #fff;
     font-size: 16px;
     font-weight: bold;
     cursor: pointer;
+    margin-top: 2rem;
 `;
 
 const SuccessMessage = styled.div`
