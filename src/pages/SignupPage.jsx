@@ -80,7 +80,7 @@ const SignupPage = () => {
     };
 
     const handleSignup = async (e) => {
-        e.preventDefault(); // 폼 제출 방지
+        e.preventDefault();
 
         if (password !== confirmPassword) {
             alert('비밀번호가 일치하지 않습니다.');
@@ -94,19 +94,19 @@ const SignupPage = () => {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    login_id: userId, // 아이디
-                    password, // 비밀번호
-                    name, // 이름
-                    nickname, // 닉네임
-                    email, // 이메일
-                    country_id: countryId, // 국가
+                    login_id: userId,
+                    password,
+                    name,
+                    nickname,
+                    email,
+                    country_id: countryId,
                 }),
             });
 
             if (response.ok) {
                 const data = await response.json();
-                alert(data.message); // 성공 메시지 출력
-                navigate('/'); // 홈으로 이동
+                alert(data.message);
+                navigate('/signup-success', { state: { nickname } }); // 성공 페이지로 이동
             } else {
                 const errorData = await response.json();
                 alert(`회원가입 실패: ${errorData.message}`);
@@ -146,9 +146,7 @@ const SignupPage = () => {
                         중복 확인
                     </DuplicateCheckButton>
                 </InputWrapper>
-                <InputWrapper>
-                    <Input type="text" placeholder="이름" value={name} onChange={(e) => setName(e.target.value)} />
-                </InputWrapper>
+
                 <InputWrapper>
                     <Input
                         type={showPassword ? 'text' : 'password'}
@@ -347,6 +345,7 @@ const Select = styled.select`
 const SubmitButton = styled.button`
     display: flex;
     width: 100%;
+    margin-top: 120px;
     margin-bottom: 15px;
     max-width: 360px;
     padding: 12px;
