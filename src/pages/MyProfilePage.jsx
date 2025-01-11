@@ -102,20 +102,6 @@ const Container = styled.div`
     min-height: 100vh;
 `;
 
-const RewardsSection = styled.div`
-    padding: 20px;
-    background-color: white;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    text-align: center;
-`;
-
-const RewardItem = styled.p`
-    font-size: 18px;
-    margin: 10px 0;
-    font-weight: bold;
-`;
-
 const UserInfoSection = styled.div`
     padding: 20px;
     background-color: white;
