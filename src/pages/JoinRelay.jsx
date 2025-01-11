@@ -1,13 +1,18 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router";
 import styled from "styled-components";
 import theme from "../styles/theme";
 import CheckedIcon from "../assets/icon/checked-icon.svg";
 import UncheckedIcon from "../assets/icon/unchecked-icon.svg";
+import apiClient from "../services/api";
 
 function JoinRelay() {
+  const navigate = useNavigate();
+
   const [isCreated, setIsCreated] = useState(false); // 버튼 상태 관리
   const [missionText, setMissionText] = useState(""); // 전달받은 미션
   const [isConfirmed, setIsConfirmed] = useState(false);
+  const [selectedCountryCount, setSelectedCountryCount] = useState(1);
   const [isChecked, setIsChecked] = useState(false);
   const [isMakeRelayActive, setIsMakeRelayActive] = useState(false);
 
@@ -18,8 +23,8 @@ function JoinRelay() {
   const handleButtonClick = async () => {
     if (!isCreated) {
       try {
-        const mockData = { mission: "페트병 5개 줍기" };
-        setMissionText(mockData.mission);
+        const response = await apiClient.get("/relays/mission");
+        setMissionText(response.data.success.result); // 서버에서 받은 mission 값 설정
         setIsCreated(true); // 버튼 상태를 '재 생성'으로 변경
       } catch (error) {
         console.error("Error fetching mission:", error);
@@ -32,7 +37,30 @@ function JoinRelay() {
   };
 
   const handleCheckboxClick = () => {
-    setIsChecked((prev) => !prev); // 클릭 시 상태 토글
+    setIsChecked((prev) => !prev);
+  };
+
+  const handleCountrySelect = (e) => {
+    setSelectedCountryCount(Number(e.target.value));
+  };
+
+  const handleMakeRelayClick = async () => {
+    if (isMakeRelayActive && missionText && selectedCountryCount) {
+      try {
+        const payload = {
+          mission: missionText,
+          reward: 1,
+          unique_country_count: selectedCountryCount,
+        };
+
+        const response = await apiClient.post("/relays/create", payload);
+        console.log("Relay created:", response.data);
+
+        navigate("/premain");
+      } catch (error) {
+        console.error("Error creating relay:", error);
+      }
+    }
   };
 
   return (
@@ -46,9 +74,6 @@ function JoinRelay() {
             <div id="mission-box">
               <MissionBox>{missionText}</MissionBox>
             </div>
-            {/* <CreateBtn isCreated={isCreated} onClick={handleButtonClick}>
-              {isCreated ? "재 생성" : "생성"}
-            </CreateBtn> */}
             {!isConfirmed && (
               <CreateBtn isCreated={isCreated} onClick={handleButtonClick}>
                 {isCreated ? "재 생성" : "생성"}
@@ -68,8 +93,8 @@ function JoinRelay() {
 
           <ContryNumber>
             {/* <div className="contry-count"> */}
-            <MissionSelect>
-              <option value="" disabled></option>
+            <MissionSelect onChange={handleCountrySelect}>
+              <option value="" disabled selected></option>
               {[1, 2, 3, 4, 5].map((num) => (
                 <option key={num} value={num}>
                   {num}
@@ -104,7 +129,9 @@ function JoinRelay() {
           </CheckboxContainer>
         </AgreeContainer>
       </ContentContainer>
-      <MakeRelay active={isMakeRelayActive}>이어달리기 개설하기</MakeRelay>
+      <MakeRelay active={isMakeRelayActive} onClick={handleMakeRelayClick}>
+        이어달리기 개설하기
+      </MakeRelay>
     </Container>
   );
 }
