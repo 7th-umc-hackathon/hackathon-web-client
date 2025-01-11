@@ -3,7 +3,7 @@
 <b>[UMC 7th HACKATHON U조] Client</b>
 <br/>
 
-### 서비스 이름 : (미정정)
+### 서비스 이름 : (미정)
 
 <br/>
 <br/>
