@@ -1,44 +1,86 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import SignupModal from '../components/Signup/signupmodal';
 
 const SignupPage = () => {
     const [nickname, setNickname] = useState('');
-    const [username, setUsername] = useState('');
+    const [userId, setUserId] = useState('');
     const [isUsernameValid, setIsUsernameValid] = useState(null);
     const [password, setPassword] = useState('');
     const [email, setEmail] = useState('');
+
+    const [countryId, setCountryId] = useState('');
+    const [countries, setCountries] = useState([]);
+
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const isFormValid = nickname && username && password && email && isUsernameValid;
+    const isFormValid = nickname && userId && password && email && countryId && (isUsernameValid === true || isUsernameValid === null);
 
-    const handleDuplicateCheck = async () => {
-        // 아이디 중복 확인 로직
-        try {
-            // 예: 백엔드 API 호출 (여기서는 모의 호출)
-            const response = await new Promise((resolve) =>
-                setTimeout(() => resolve({ isDuplicate: username === 'duplicate' }), 1000)
-            );
-
-            if (response.isDuplicate) {
-                setIsUsernameValid(false);
-            } else {
-                setIsUsernameValid(true);
+    // 나라 목록 받아오기
+    useEffect(() => {
+        const fetchCountries = async () => {
+            try {
+                const response = await fetch('test2.shop:42021/auth/countries', {
+                    method: 'GET',
+                    headers: {'Content-Type':'application/json'},
+                });
+                console.log(response)
+                const data = await response.json();
+                setCountries(data.countries);
+            } catch (error) {
+                console.error('나라 선택 오류:', error);
             }
-        } catch (error) {
-            console.error('Error during duplicate check', error);
-        }
+        };
+        fetchCountries();
+    }, []);
+
+    // 아이디 중복 확인
+    const handleDuplicateCheck = async () => {
+        try {
+            const response = await fetch('test2.shop:42021/auth/id/unique', {
+                method: 'POST',
+                headers: { 'Content-Type':'application/json;charset=utf-8'},
+                body: JSON.stringify({ 
+                    login_id: userId,
+                }),  
+            });             
+
+            if (response.status === 200) {
+                    setIsUsernameValid(true);
+                } else if (response.status === 409) {
+                    setIsUsernameValid(false);
+                }
+            } catch (error) {
+                console.error('아이디 중복 확인 중 오류:', error);
+            }
     };
 
-    const handleSignup = (e) => {
+    // 회원가입
+    const handleSignup = async (e) => {
         e.preventDefault();
-        if (isFormValid) {
-            console.log('회원가입 시도:', { nickname, username, password, email });
-            setIsModalOpen(true);
-            // 회원가입 로직
-        } else {
-            alert('모든 필드를 채워주세요.');
-        }
+        try {
+            const response = await fetch('/auth/register/local', {
+                method: 'POST',
+                headers: { 'Content-Type':'application/json;charset=utf-8' },
+                body: JSON.stringify({
+                login_id: userId,
+                password,
+                name,
+                country_id: countryId,
+                }),
+            });
+
+            if (response.status === 201) {
+                const data = await response.json();
+                localStorage.setItem('accessToken', data.access_token);
+                console.log('회원가입 데이터:', response.data);
+                setIsModalOpen(true);
+                } else {
+                    console.log('회원가입 실패: ', response.status);
+                    }
+            } catch (error) {
+                console.error('회원가입 실패:', error);
+            }
     };
 
     const handleCloseModal = () => {
@@ -59,10 +101,10 @@ const SignupPage = () => {
                     <IdInput
                         type="text"
                         placeholder="아이디"
-                        value={username}
+                        value={userId}
                         onChange={(e) => {
-                            setUsername(e.target.value);
-                            setIsUsernameValid(null); // 입력이 바뀌면 초기화
+                            setUserId(e.target.value);
+                            setUserId(null);
                         }}
                     />
                     <IdCheckButton type="button" onClick={handleDuplicateCheck}>
@@ -78,6 +120,19 @@ const SignupPage = () => {
                     onChange={(e) => setPassword(e.target.value)}
                 />
                 <Input type="email" placeholder="이메일" value={email} onChange={(e) => setEmail(e.target.value)} />
+                
+                <Select
+                    value={countryId}
+                    onChange={(e) => setCountryId(e.target.value)}
+                >
+                    <option value="" disabled>국가를 선택해주세요</option>
+                    {countries.map((country) => (
+                        <option key={country.country_id} value={country.country_id}>
+                            {country.common_name}
+                        </option>
+                    ))}
+                </Select>
+                
                 <SignupButton type="submit" disabled={!isFormValid} isActive={isFormValid}>
                     회원가입
                 </SignupButton>
@@ -120,6 +175,15 @@ const Input = styled.input`
     border-radius: 4px;
     font-size: 16px;
 `;
+
+const Select = styled.select`
+    margin-bottom: 15px;
+    padding: 10px;
+    border: 1px solid var(--gray1-color);
+    border-radius: 4px;
+    font-size: 16px;
+`;
+
 
 const IdWrapper = styled.div`
     display: flex;
