@@ -12,7 +12,7 @@ apiClient.interceptors.request.use(
         // localStorage에서 accessToken 가져오기
         const accessToken = localStorage.getItem('accessToken');
         if (accessToken) {
-            config.headers.Authorization = `Bearer ${accessToken}`;
+            config.headers.Authorization = accessToken; // Bearer 포함된 상태로 설정
         }
         return config;
     },
@@ -38,6 +38,11 @@ apiClient.interceptors.response.use(
         return Promise.reject(error);
     }
 );
+
+// 로그인 성공 시 accessToken 저장 함수
+export const saveAccessToken = (token) => {
+    localStorage.setItem('accessToken', token); // accessToken을 localStorage에 저장
+};
 
 // GET 요청
 export const getRequest = (url, params = {}) => {
