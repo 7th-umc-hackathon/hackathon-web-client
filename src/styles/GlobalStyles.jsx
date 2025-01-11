@@ -21,28 +21,22 @@ const GlobalStyles = createGlobalStyle`
 
   html {
     font-size: 62.5%; /* 1rem = 10px */
-    @media (max-width: 1200px) {
-      font-size: 60%;
-    }
-    @media (max-width: 992px) {
-      font-size: 58%;
-    }
-    @media (max-width: 768px) {
-      font-size: 56%;
-    }
-    @media (max-width: 576px) {
-      font-size: 54%;
-    }
+    width: 100%;
+    height: 100%;
   }
 
   body {
     font-family: 'Pretendard', sans-serif;
-    font-size: 1.6rem; /* 16px */
+    font-size: 1.6rem;
     line-height: 1.6;
     margin: 0;
-  
     padding: 0;
-    overflow-x: hidden; /* Prevent horizontal scroll */
+    background-color: #f8f9fa;
+    overflow-x: hidden;
+    width: 360px;
+    height: 740px;
+    margin: auto; /* 화면 가운데 정렬 */
+    border : 1px solid black;
   }
 
   a {
@@ -64,7 +58,6 @@ const GlobalStyles = createGlobalStyle`
   button {
     font-family: inherit;
     font-size: inherit;
-    line-height: inherit;
     background: none;
     border: none;
     cursor: pointer;
@@ -73,38 +66,15 @@ const GlobalStyles = createGlobalStyle`
   input, textarea {
     font-family: inherit;
     font-size: inherit;
-    line-height: inherit;
     outline: none;
   }
 
-  /* Centered container with max width */
   .container {
     width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
+    max-width: 360px;
+    height: 740px;
+    margin: auto;
     padding: 0 20px;
-  }
-
-  /* Responsive Typography */
-  h1 {
-    font-size: 2.4rem;
-    @media (max-width: 768px) {
-      font-size: 2rem;
-    }
-  }
-
-  h2 {
-    font-size: 2rem;
-    @media (max-width: 768px) {
-      font-size: 1.8rem;
-    }
-  }
-
-  p, li {
-    font-size: 1.6rem;
-    @media (max-width: 768px) {
-      font-size: 1.4rem;
-    }
   }
 `;
 
