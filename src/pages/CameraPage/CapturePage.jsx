@@ -2,45 +2,62 @@ import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
 import Webcam from 'react-webcam';
 import { useNavigate, useLocation } from 'react-router-dom';
+
 import BackIcon from '../../assets/icon/back-icon.svg';
 import CaptureButtonIcon from '../../assets/icon/capture-button.svg';
 
 import StyledImg from './components/StyledImg';
+import FailureModal from './Modal/FailureModal';
+import SuccessModal from './Modal/SuccessModal';
 
 export default function CapturePage() {
     const location = useLocation();
-    const { missionTitle } = location.state || {}; // 전달된 missionTitle 가져오기
+    const { missionTitle } = location.state || {};
 
     const webcamRef = useRef(null);
     const [capturedImage, setCapturedImage] = useState(null);
-    // const [isMissionSuccess, setIsMissionSuccess] = useState(null);
-    const isMissionSuccess = true;
+    const [isFailModalOpen, setIsFailModalOpen] = useState(false);
+    const [isOkModalOpen, setIsOkModalOpen] = useState(false);
+
+    const handleCloseFailModal = () => setIsFailModalOpen(false);
+    const handleCloseOkModal = () => setIsOkModalOpen(false);
+
     const navigate = useNavigate();
 
-    // 사진 촬영
     const captureImage = () => {
         const imageSrc = webcamRef.current.getScreenshot();
-        setCapturedImage(imageSrc); // 캡처한 이미지를 저장
+        setCapturedImage(imageSrc);
     };
 
-    // 서버로 이미지 전송
     const submitImage = async () => {
         if (!capturedImage) return;
 
         try {
+            const formData = new FormData();
+
+            formData.append('image', capturedImage);
+            formData.append('mission', '페트병 3개 줍기'); // TODO: localStorage로 사용자의가장 최근 미션 내용 꺼내서 삽입하여 요청 보내기
+
             const response = await fetch('http://test2.shop:42021/relays/mission/complete', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ image: capturedImage }),
+                body: formData,
             });
 
             const result = await response.json();
-            // setIsMissionSuccess(result.success);
+
+            // 정확하게 result 값을 비교
+            if (result.success && result.success.result === "True") {
+                setIsOkModalOpen(true);
+            } else {
+                setIsFailModalOpen(true);
+                // setIsOkModalOpen(true);
+            }
         } catch (error) {
             console.error('서버 전송 오류:', error);
-            // setIsMissionSuccess(false);
+            setIsFailModalOpen(true);
         }
     };
+
 
     return (
         <Container>
@@ -53,13 +70,7 @@ export default function CapturePage() {
             {capturedImage ? (
                 <PreviewContainer>
                     <PreviewImage src={capturedImage} alt="Captured" />
-                    {isMissionSuccess === null ? (
-                        <SubmitButton onClick={submitImage}>미션 제출</SubmitButton>
-                    ) : isMissionSuccess ? (
-                        <SuccessMessage>미션 성공!</SuccessMessage>
-                    ) : (
-                        <FailMessage>미션 실패</FailMessage>
-                    )}
+                    <SubmitButton onClick={submitImage}>미션 제출</SubmitButton>
                 </PreviewContainer>
             ) : (
                 <>
@@ -71,7 +82,7 @@ export default function CapturePage() {
                             videoConstraints={{
                                 width: 400,
                                 height: 600,
-                                facingMode: 'environment', // 후면 카메라 우선
+                                facingMode: 'environment',
                             }}
                         />
                     </WebcamContainer>
@@ -82,6 +93,14 @@ export default function CapturePage() {
                     </BottomBar>
                 </>
             )}
+
+            {isFailModalOpen && (
+                <FailureModal isOpen={isFailModalOpen} onClose={handleCloseFailModal} />
+            )}
+
+            {isOkModalOpen && (
+                <SuccessModal isOpen={isOkModalOpen} onClose={handleCloseOkModal} />
+            )}
         </Container>
     );
 }
@@ -89,7 +108,7 @@ export default function CapturePage() {
 const Container = styled.div`
     display: flex;
     flex-direction: column;
-    background-color: #000; /* 어두운 톤 */
+    background-color: #000;
     color: #fff;
     height: 100vh;
 `;
@@ -98,13 +117,9 @@ const TopBar = styled.div`
     display: flex;
     align-items: center;
     background: var(--Gray-1, #333);
-    display: flex;
     height: 7rem;
     padding: 1rem;
-    align-items: center;
     gap: 1rem;
-    flex-shrink: 0;
-    color: #fff;
 `;
 
 const BackButton = styled.div`
@@ -168,16 +183,4 @@ const SubmitButton = styled.button`
     font-weight: bold;
     cursor: pointer;
     margin-top: 2rem;
-`;
-
-const SuccessMessage = styled.div`
-    color: #3ee187;
-    font-size: 18px;
-    font-weight: bold;
-`;
-
-const FailMessage = styled.div`
-    color: #ff4f4f;
-    font-size: 18px;
-    font-weight: bold;
 `;
