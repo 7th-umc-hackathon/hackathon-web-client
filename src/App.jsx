@@ -27,7 +27,6 @@ function App() {
                 <Route path="/signup-success" element={<SignupSuccessPage />} />
 
             </Routes>
-            <Footer />
         </div>
     );
 }
