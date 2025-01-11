@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { getRequest } from '../../services/api'; // API 요청 함수 가져오기
+import MoneyIcon from '../../assets/icon/money.svg'; // MoneyIcon 경로
 
 const RewardSection = () => {
     const [userData, setUserData] = useState(null);
@@ -41,6 +42,9 @@ const RewardSection = () => {
 
     return (
         <Container>
+            <MoneyIconWrapper>
+                <MoneyImage src={MoneyIcon} alt="Money Icon" />
+            </MoneyIconWrapper>
             <RewardText>
                 현재 <strong>{nickname}님</strong>의 리워드는 <Point>{point}</Point> 점
             </RewardText>
@@ -75,6 +79,21 @@ const Container = styled.div`
     display: flex;
     flex-direction: column;
     gap: 16px;
+    position: relative; /* 아이콘 위치를 절대적으로 배치할 수 있도록 설정 */
+    overflow: hidden;
+`;
+
+const MoneyIconWrapper = styled.div`
+    position: absolute;
+    top: -5px; /* 아이콘의 상단 위치 조정 */
+    left: -5px; /* 아이콘의 왼쪽 위치 조정 */
+    z-index: 0; /* 컨테이너 뒤로 배치 */
+`;
+
+const MoneyImage = styled.img`
+    width: 80px; /* 아이콘 크기 조정 */
+    height: 80px;
+    opacity: 1; /* 아이콘을 투명하게 만들어 텍스트가 잘 보이도록 설정 */
 `;
 
 const RewardText = styled.div`
