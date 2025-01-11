@@ -40,7 +40,7 @@ const Navbar = () => {
                 alt="Logo"
                 onClick={() => navigate('/main')} // 클릭 시 /main 이동
             />
-            <ProfileWrapper onClick={() => navigate('/mypage')}>
+            <ProfileWrapper onClick={() => navigate('/myprofile')}>
                 <Profile src={ProfileIcon} alt="Profile Icon" />
             </ProfileWrapper>
         </NavbarContainer>

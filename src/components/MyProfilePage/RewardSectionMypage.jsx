@@ -1,16 +1,56 @@
+import { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import { getRequest } from '../../services/api';
+import { useNavigate } from 'react-router';
 
+const RewardSectionWithSettings = () => {
+    const navigate = useNavigate();
+    const handleNavigation = (path) => {
+        navigate(path);
+    };
 
-const RewardSectionWithSettings = ({ name, points, countryRank, personalRank, profileImage, onClick  }) => {
+    const [userData, setUserData] = useState(null);
+    const [personalRank, setPersonalRank] = useState(null);
+    const [countryRank, setCountryRank] = useState(null);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                // 이름 데이터 요청
+                const profileResponse = await getRequest('/users/profile');
+                const user = profileResponse.data.success.user;
+
+                // 개인 순위 요청
+                const personalRankResponse = await getRequest('/users/rank/user');
+                const personalRank = personalRankResponse.data.success.rank;
+
+                // 국가 순위 요청
+                const countryRankResponse = await getRequest('/users/rank/user/country');
+                const countryRank = countryRankResponse.data.success.rank;
+
+                setUserData(user);
+                setPersonalRank(personalRank);
+                setCountryRank(countryRank);
+            } catch (error) {
+                console.error('데이터 가져오기 오류:', error);
+            }
+        };
+        fetchData();
+    }, []);
+
+    if (!userData || personalRank === null || countryRank === null) {
+        return <div>로딩 중...</div>; // 데이터 로딩 중 표시
+    }
+
+    const { nickname, point } = userData;
     return (
         <Container>
-
             <TopSection>
                 <ProfileContainer>
-                    <ProfileImage src={''} alt={`${name}의 프로필`} />
-                    <UserName>{name}</UserName>
+                    <ProfileImage src={''} alt={`${nickname}의 프로필`} />
+                    <UserName>{nickname}</UserName>
                 </ProfileContainer>
-                <SettingsButton onClick={onClick}>⚙️</SettingsButton>
+                <SettingsButton onClick={() => handleNavigation('/myinformation')}>⚙️</SettingsButton>
             </TopSection>
 
             <HorizontalDivider />
@@ -18,7 +58,7 @@ const RewardSectionWithSettings = ({ name, points, countryRank, personalRank, pr
             <Ranks>
                 <RankContainer>
                     <Rank>
-                        리워드 <RewardValue>{points}</RewardValue>P
+                        리워드 <RewardValue>{point}</RewardValue>P
                     </Rank>
                 </RankContainer>
                 <VerticalDivider />
@@ -54,12 +94,11 @@ const Container = styled.div`
 `;
 
 const TopSection = styled.div`
-  padding-top: 10px;
-  padding-left: 10px;
+    padding-top: 10px;
+    padding-left: 10px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    
 `;
 const ProfileContainer = styled.div`
     display: flex;
