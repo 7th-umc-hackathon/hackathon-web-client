@@ -29,7 +29,9 @@ const ModalContainer = styled.div`
     z-index: 1001;
     gap: 3rem;
     border-radius: 1rem;
-	padding: 1rem;
+	padding: 2rem;
+	max-height: 90vh;
+	overflow-y: scroll;
 `;
 
 const Modal = ({ isOpen, onClose, children }) => {
