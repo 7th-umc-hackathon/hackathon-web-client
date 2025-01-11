@@ -7,6 +7,7 @@ import SignupPage from './pages/SignupPage';
 import MyProfilePage from './pages/MyProfilePage';
 
 import CapturePage from './pages/CapturePage';
+import InformationPage from './pages/MyInformationPage';
 function App() {
     return (
         <div className="App">
@@ -17,6 +18,7 @@ function App() {
                 <Route path="/signup" element={<SignupPage />} />
                 <Route path="/myprofile" element={<MyProfilePage />} />
                 <Route path="/capture" element={<CapturePage />} />
+                <Route path="/myinformation" element={<InformationPage />} />
             </Routes>
             {/* <Footer /> */}
         </div>
