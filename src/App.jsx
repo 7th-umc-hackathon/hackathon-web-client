@@ -10,6 +10,7 @@ import JoinRelay from './pages/JoinRelay';
 import RunningRelay from './pages/RunningRelay';
 import InformationPage from './pages/MyInformationPage';
 import SignupSuccessPage from './pages/SignupSuccessPage';
+import RankingPage from './pages/RankingPage';
 
 function App() {
     return (
@@ -25,7 +26,7 @@ function App() {
                 <Route path="/runningrelay" element={<RunningRelay />} />
                 <Route path="/myprofile" element={<MyProfilePage />} />
                 <Route path="/signup-success" element={<SignupSuccessPage />} />
-
+                <Route path="/ranking" element={<RankingPage />} />
             </Routes>
             <Footer />
         </div>
