@@ -1,235 +1,355 @@
 import { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import SignupModal from '../components/Signup/signupmodal';
+import BackIcon from '../assets/icon/back-icon2.svg';
+import EyeIconOff from '../assets/icon/eye-off.svg';
+import EyeIconOn from '../assets/icon/eye-on.svg';
+import { useNavigate } from 'react-router-dom';
 
 const SignupPage = () => {
     const [nickname, setNickname] = useState('');
     const [userId, setUserId] = useState('');
-    const [isUsernameValid, setIsUsernameValid] = useState(null);
+    const [isUsernameValid, setIsUsernameValid] = useState(null); // 중복 확인 상태
     const [password, setPassword] = useState('');
-    const [email, setEmail] = useState('');
-
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const [emailLocalPart, setEmailLocalPart] = useState('');
+    const [emailDomain, setEmailDomain] = useState('');
+    const [isCustomEmail, setIsCustomEmail] = useState(false);
+    const [customEmailDomain, setCustomEmailDomain] = useState('');
     const [countryId, setCountryId] = useState('');
     const [countries, setCountries] = useState([]);
 
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const navigate = useNavigate();
 
-    const isFormValid = nickname && userId && password && email && countryId && (isUsernameValid === true || isUsernameValid === null);
+    const isFormValid =
+        nickname &&
+        userId &&
+        isUsernameValid &&
+        password &&
+        confirmPassword &&
+        emailLocalPart &&
+        (isCustomEmail ? customEmailDomain : emailDomain) &&
+        countryId;
 
     // 나라 목록 받아오기
     useEffect(() => {
         const fetchCountries = async () => {
             try {
-                const response = await fetch('test2.shop:42021/auth/countries', {
-                    method: 'GET',
-                    headers: {'Content-Type':'application/json'},
-                });
-                console.log(response)
+                const response = await fetch('http://test2.shop:42021/auth/countries');
+                if (!response.ok) throw new Error('Failed to fetch countries');
                 const data = await response.json();
-                setCountries(data.countries);
+
+                const sortedCountries = [
+                    ...data.success.filter((country) => country.common_name === 'South Korea'),
+                    ...data.success.filter((country) => country.common_name !== 'South Korea'),
+                ];
+
+                setCountries(sortedCountries);
             } catch (error) {
-                console.error('나라 선택 오류:', error);
+                console.error('Error fetching countries:', error);
             }
         };
         fetchCountries();
     }, []);
 
-    // 아이디 중복 확인
-    const handleDuplicateCheck = async () => {
-        try {
-            const response = await fetch('test2.shop:42021/auth/id/unique', {
-                method: 'POST',
-                headers: { 'Content-Type':'application/json;charset=utf-8'},
-                body: JSON.stringify({ 
-                    login_id: userId,
-                }),  
-            });             
-
-            if (response.status === 200) {
-                    setIsUsernameValid(true);
-                } else if (response.status === 409) {
-                    setIsUsernameValid(false);
-                }
-            } catch (error) {
-                console.error('아이디 중복 확인 중 오류:', error);
-            }
+    const handleBack = () => {
+        navigate('/');
     };
 
-    // 회원가입
+    const handleDuplicateCheck = async () => {
+        try {
+            const response = await fetch('http://test2.shop:42021/auth/id/unique', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ login_id: userId }),
+            });
+
+            if (response.ok) {
+                setIsUsernameValid(true);
+                alert('사용 가능한 아이디입니다.');
+            } else {
+                setIsUsernameValid(false);
+                alert('이미 사용 중인 아이디입니다.');
+            }
+        } catch (error) {
+            console.error('아이디 중복 확인 오류:', error);
+        }
+    };
+
     const handleSignup = async (e) => {
         e.preventDefault();
+
+        if (password !== confirmPassword) {
+            alert('비밀번호가 일치하지 않습니다.');
+            return;
+        }
+
+        const email = isCustomEmail ? `${emailLocalPart}@${customEmailDomain}` : `${emailLocalPart}@${emailDomain}`;
+
         try {
-            const response = await fetch('/auth/register/local', {
+            const response = await fetch('http://test2.shop:42021/auth/register/local', {
                 method: 'POST',
-                headers: { 'Content-Type':'application/json;charset=utf-8' },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                login_id: userId,
-                password,
-                name,
-                country_id: countryId,
+                    login_id: userId,
+                    password,
+                    name: nickname,
+                    email,
+                    country_id: countryId,
                 }),
             });
 
-            if (response.status === 201) {
+            if (response.ok) {
                 const data = await response.json();
-                localStorage.setItem('accessToken', data.access_token);
-                console.log('회원가입 데이터:', response.data);
-                setIsModalOpen(true);
-                } else {
-                    console.log('회원가입 실패: ', response.status);
-                    }
-            } catch (error) {
-                console.error('회원가입 실패:', error);
+                alert(data.message);
+                navigate('/');
+            } else {
+                const errorData = await response.json();
+                alert(`회원가입 실패: ${errorData.message}`);
             }
-    };
-
-    const handleCloseModal = () => {
-        setIsModalOpen(false);
+        } catch (error) {
+            console.error('회원가입 요청 오류:', error);
+            alert('회원가입 요청 중 문제가 발생했습니다.');
+        }
     };
 
     return (
         <Container>
+            <TopBar>
+                <BackButton src={BackIcon} alt="Back" onClick={handleBack} />
+                <Title>회원가입</Title>
+            </TopBar>
             <Form onSubmit={handleSignup}>
-                <Title>Hello, Mate!</Title>
-                <Input
-                    type="text"
-                    placeholder="닉네임"
-                    value={nickname}
-                    onChange={(e) => setNickname(e.target.value)}
-                />
-                <IdWrapper>
+                <InputWrapper>
+                    <Input
+                        type="text"
+                        placeholder="닉네임"
+                        value={nickname}
+                        onChange={(e) => setNickname(e.target.value)}
+                    />
+                </InputWrapper>
+                <InputWrapper>
                     <IdInput
                         type="text"
                         placeholder="아이디"
                         value={userId}
-                        onChange={(e) => {
-                            setUserId(e.target.value);
-                            setUserId(null);
-                        }}
+                        onChange={(e) => setUserId(e.target.value)}
                     />
-                    <IdCheckButton type="button" onClick={handleDuplicateCheck}>
-                        중복확인
-                    </IdCheckButton>
-                </IdWrapper>
-                {isUsernameValid === true && <ValidationMessage success>사용 가능한 아이디입니다</ValidationMessage>}
-                {isUsernameValid === false && <ValidationMessage>사용 불가한 아이디입니다</ValidationMessage>}
-                <Input
-                    type="password"
-                    placeholder="비밀번호"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                />
-                <Input type="email" placeholder="이메일" value={email} onChange={(e) => setEmail(e.target.value)} />
-                
-                <Select
-                    value={countryId}
-                    onChange={(e) => setCountryId(e.target.value)}
-                >
-                    <option value="" disabled>국가를 선택해주세요</option>
-                    {countries.map((country) => (
-                        <option key={country.country_id} value={country.country_id}>
-                            {country.common_name}
+                    <DuplicateCheckButton onClick={handleDuplicateCheck}>중복 확인</DuplicateCheckButton>
+                </InputWrapper>
+                <InputWrapper>
+                    <Input
+                        type={showPassword ? 'text' : 'password'}
+                        placeholder="비밀번호"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                    />
+                    <EyeIcon
+                        src={showPassword ? EyeIconOn : EyeIconOff}
+                        alt="Toggle Password"
+                        onClick={() => setShowPassword((prev) => !prev)}
+                    />
+                </InputWrapper>
+                <InputWrapper>
+                    <Input
+                        type={showConfirmPassword ? 'text' : 'password'}
+                        placeholder="비밀번호 확인"
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                    />
+                    <EyeIcon
+                        src={showConfirmPassword ? EyeIconOn : EyeIconOff}
+                        alt="Toggle Password"
+                        onClick={() => setShowConfirmPassword((prev) => !prev)}
+                    />
+                </InputWrapper>
+                <InputWrapper>
+                    <EmailInput
+                        type="text"
+                        placeholder="이메일 아이디"
+                        value={emailLocalPart}
+                        onChange={(e) => setEmailLocalPart(e.target.value)}
+                    />
+                    <Separator>@</Separator>
+                    {isCustomEmail ? (
+                        <CustomEmailWrapper>
+                            <EmailInput
+                                type="text"
+                                placeholder="직접 입력"
+                                value={customEmailDomain}
+                                onChange={(e) => setCustomEmailDomain(e.target.value)}
+                            />
+                        </CustomEmailWrapper>
+                    ) : (
+                        <EmailSelect
+                            value={emailDomain}
+                            onChange={(e) => {
+                                if (e.target.value === 'custom') {
+                                    setIsCustomEmail(true);
+                                    setEmailDomain('');
+                                } else {
+                                    setIsCustomEmail(false);
+                                    setEmailDomain(e.target.value);
+                                }
+                            }}
+                        >
+                            <option value="" disabled>
+                                선택
+                            </option>
+                            <option value="gmail.com">gmail.com</option>
+                            <option value="naver.com">naver.com</option>
+                            <option value="daum.net">daum.net</option>
+                            <option value="custom">직접 입력</option>
+                        </EmailSelect>
+                    )}
+                </InputWrapper>
+                <InputWrapper>
+                    <Select value={countryId} onChange={(e) => setCountryId(e.target.value)}>
+                        <option value="" disabled>
+                            국적
                         </option>
-                    ))}
-                </Select>
-                
-                <SignupButton type="submit" disabled={!isFormValid} isActive={isFormValid}>
+                        {countries.map((country) => (
+                            <option key={country.country_id} value={country.country_id}>
+                                {country.common_name}
+                            </option>
+                        ))}
+                    </Select>
+                </InputWrapper>
+                <SubmitButton type="submit" isActive={isFormValid}>
                     회원가입
-                </SignupButton>
+                </SubmitButton>
             </Form>
-
-            <SignupModal isOpen={isModalOpen} onClose={handleCloseModal} />
         </Container>
     );
 };
 
 export default SignupPage;
 
-// Styled Components
 const Container = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    height: 100vh;
+    background-color: #ffffff;
+`;
+
+const TopBar = styled.div`
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 10px 20px;
+`;
+
+const BackButton = styled.img`
+    cursor: pointer;
+`;
+
+const Title = styled.h1`
+    flex: 1;
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    margin-left: -10px;
 `;
 
 const Form = styled.form`
     display: flex;
     flex-direction: column;
-    width: 300px;
-    padding: 20px;
+    width: 90%;
+    max-width: 360px;
+    margin-top: 20px;
 `;
 
-const Title = styled.h1`
-    font-size: 24px;
-    font-weight: bold;
-    text-align: center;
-    margin-bottom: 20px;
-    color: #333;
+const InputWrapper = styled.div`
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #bdbdbd;
+    padding: 11px 0;
+    margin-bottom: 30px;
 `;
 
 const Input = styled.input`
-    margin-bottom: 15px;
-    padding: 10px;
-    border: 1px solid var(--gray1-color);
-    border-radius: 4px;
-    font-size: 16px;
+    flex: 1;
+    border: none;
+    font-size: 14px;
+    outline: none;
 `;
-
-const Select = styled.select`
-    margin-bottom: 15px;
-    padding: 10px;
-    border: 1px solid var(--gray1-color);
-    border-radius: 4px;
-    font-size: 16px;
-`;
-
-
-const IdWrapper = styled.div`
+const CustomEmailWrapper = styled.div`
+    flex: 1;
     display: flex;
     align-items: center;
-    gap: 10px;
-    margin-bottom: 10px;
-`;
-const IdInput = styled.input`
-    padding: 10px;
-    border: 1px solid var(--gray1-color);
-    border-radius: 4px;
-    font-size: 16px;
-    min-width: 0;
-`;
-const IdCheckButton = styled.button`
-    padding: 10px 15px;
-    font-size: 14px;
+    padding: 0;
     border: none;
-    border-radius: 4px;
-    background-color: var(--gray1-color);
+    margin: 0;
+
+    input {
+        width: 100%;
+        border: none;
+        font-size: 14px;
+        outline: none;
+    }
+`;
+const IdInput = styled(Input)``;
+
+const DuplicateCheckButton = styled.button`
+    background: #4f4f4f;
     color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
     cursor: pointer;
-    flex-shrink: 0;
+
     &:hover {
-        filter: brightness(0.5);
+        background: #3e3e3e;
     }
 `;
 
-const ValidationMessage = styled.p`
-    text-align: center;
-    font-size: 14px;
-    color: ${(props) => (props.success ? 'var(--gray1-color)' : 'red')};
-    margin-bottom: 10px;
+const EyeIcon = styled.img`
+    cursor: pointer;
+    width: 20px;
+    height: 20px;
 `;
 
-const SignupButton = styled.button`
-    padding: 10px;
-    font-size: 16px;
+const EmailInput = styled(Input)``;
+
+const Separator = styled.span`
+    margin: 0 10px;
+    font-size: 14px;
+    color: #999;
+`;
+
+const EmailSelect = styled.select`
+    flex: 1;
     border: none;
-    border-radius: 4px;
-    background-color: ${(props) => (props.isActive ? 'var(--main-color)' : 'var(--gray3-color)')};
-    color: ${(props) => (props.isActive ? 'var(--gray1-color)' : 'var( --base-color)')};
+    font-size: 14px;
+    outline: none;
+`;
+
+const Select = styled.select`
+    width: 100%;
+    border: none;
+    font-size: 14px;
+    outline: none;
+`;
+
+const SubmitButton = styled.button`
+    display: flex;
+    width: 100%;
+    margin-top: 154px;
+    margin-bottom: 15px;
+    max-width: 360px;
+    padding: 12px;
+    justify-content: center;
+    align-items: center;
+    border-radius: 12px;
+    background: ${(props) => (props.isActive ? 'var(--Main-Color2, #3EE187)' : '#e0e0e0')};
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
     cursor: ${(props) => (props.isActive ? 'pointer' : 'not-allowed')};
-    transition: background-color 0.3s ease;
 
     &:hover {
-        background-color: ${(props) => (props.isActive ? '#e0a800' : '#ccc')};
+        background: ${(props) => (props.isActive ? '#32d17c' : '#d6d6d6')};
     }
 `;
