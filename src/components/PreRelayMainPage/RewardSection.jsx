@@ -1,12 +1,48 @@
-//메인페이지 상단의 리워드 컴포넌트입니다. 마이페이지에서 재활용 가능
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { getRequest } from '../../services/api'; // API 요청 함수 가져오기
 
-const RewardSection = ({ name, points, countryRank, personalRank }) => {
+const RewardSection = () => {
+    const [userData, setUserData] = useState(null);
+    const [personalRank, setPersonalRank] = useState(null);
+    const [countryRank, setCountryRank] = useState(null);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                // 프로필 데이터 요청
+                const profileResponse = await getRequest('/users/profile');
+                const user = profileResponse.data.success.user;
+
+                // 개인 순위 요청
+                const personalRankResponse = await getRequest('/users/rank/user');
+                const personalRank = personalRankResponse.data.success.rank;
+
+                // 국가 순위 요청
+                const countryRankResponse = await getRequest('/users/rank/user/country');
+                const countryRank = countryRankResponse.data.success.rank;
+
+                setUserData(user);
+                setPersonalRank(personalRank);
+                setCountryRank(countryRank);
+            } catch (error) {
+                console.error('데이터 가져오기 오류:', error);
+            }
+        };
+
+        fetchData();
+    }, []);
+
+    if (!userData || personalRank === null || countryRank === null) {
+        return <div>로딩 중...</div>; // 데이터 로딩 중 표시
+    }
+
+    const { nickname, point } = userData;
+
     return (
         <Container>
             <RewardText>
-                현재 <strong>{name}님</strong>의 리워드는 <Point>{points}</Point> 점
+                현재 <strong>{nickname}님</strong>의 리워드는 <Point>{point}</Point> 점
             </RewardText>
             <HorizontalDivider />
             <Ranks>
@@ -28,6 +64,7 @@ const RewardSection = ({ name, points, countryRank, personalRank }) => {
 
 export default RewardSection;
 
+// Styled-components
 const Container = styled.div`
     width: 96%;
     max-width: 360px;
@@ -52,12 +89,6 @@ const RewardText = styled.div`
     }
 `;
 
-const RankContainer = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex: 1;
-`;
 const Point = styled.span`
     font-size: 36px;
     font-style: normal;
@@ -82,9 +113,15 @@ const Ranks = styled.div`
     color: ${({ theme }) => theme.colors.gray2};
 `;
 
+const RankContainer = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+`;
+
 const Rank = styled.div`
     display: flex;
-
     color: var(--Gray-2, #4f4f4f);
     font-family: 'Noto Sans KR';
     font-size: 12px;

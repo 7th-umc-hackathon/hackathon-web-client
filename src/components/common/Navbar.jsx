@@ -1,21 +1,42 @@
 import styled from 'styled-components';
-import SouthKoreaFlag from '../../assets/icon/south-korea.svg'; // 국기 이미지 경로
-import ProfileIcon from '../../assets/icon/profile-icon.svg'; // 프로필 아이콘 경로
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom'; // React Router로 페이지 이동
+import { getRequest } from '../../services/api'; // API 요청 함수
+import ProfileIcon from '../../assets/icon/profile-icon.svg'; // 프로필 아이콘 경로
+import LogoImage from '../../assets/icon/logo.svg'; // 로고 이미지 경로
 
 const Navbar = () => {
-    const navigate = useNavigate(); // 페이지 이동을 위한 Hook
+    const [countryData, setCountryData] = useState(null);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const fetchCountryData = async () => {
+            try {
+                const response = await getRequest('/users/profile');
+                const { country } = response.data.success.user;
+                setCountryData(country);
+            } catch (error) {
+                console.error('프로필 데이터 가져오기 실패:', error);
+            }
+        };
+
+        fetchCountryData();
+    }, []);
+
+    if (!countryData) {
+        return <div>로딩 중...</div>; // 로딩 중 표시
+    }
 
     return (
         <NavbarContainer>
             <FlagWrapper>
                 <FlagContainer>
-                    <Flag src={SouthKoreaFlag} alt="South Korea Flag" />
-                    <FlagText>KR</FlagText>
+                    <Flag src={countryData.national_flag_url} alt={`${countryData.common_name} Flag`} />
+                    <FlagText>{countryData.cca3}</FlagText>
                 </FlagContainer>
             </FlagWrapper>
-            <Logo>로고</Logo>
-            <ProfileWrapper onClick={() => navigate('/myprofile')}>
+            <Logo src={LogoImage} alt="Logo" />
+            <ProfileWrapper onClick={() => navigate('/mypage')}>
                 <Profile src={ProfileIcon} alt="Profile Icon" />
             </ProfileWrapper>
         </NavbarContainer>
@@ -28,17 +49,17 @@ export default Navbar;
 const NavbarContainer = styled.div`
     display: flex;
     align-items: center;
-    justify-content: center; /* 중앙 배치 */
-    background-color: #fff; /* 흰색 배경 */
+    justify-content: center;
+    background-color: #fff;
     padding: 8px 16px;
     width: 100%;
-    height: 60px; /* Navbar 높이 */
-    position: relative; /* 절대 배치 기준 */
+    height: 60px;
+    position: relative;
 `;
 
 const FlagWrapper = styled.div`
-    position: absolute; /* 로고와 겹치지 않게 절대 배치 */
-    left: 16px; /* 왼쪽 여백 */
+    position: absolute;
+    left: 16px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -52,7 +73,7 @@ const FlagContainer = styled.div`
 
 const Flag = styled.img`
     width: 34px;
-    height: 26px;
+    height: 22px;
 `;
 
 const FlagText = styled.div`
@@ -65,20 +86,15 @@ const FlagText = styled.div`
     letter-spacing: 0.008px;
 `;
 
-const Logo = styled.div`
-    font-size: 1.6rem;
-    color: var(--gray1-color); /* 텍스트 색상 */
-    background-color: var(--gray6-color); /* 로고 배경색 */
-    padding: 4px 12px;
-    border-radius: 8px;
-    text-align: center;
-    font-weight: bold;
+const Logo = styled.img`
+    width: 100px;
+    height: auto;
 `;
 
 const ProfileWrapper = styled.div`
     position: absolute;
-    right: 16px; /* 오른쪽 여백 */
-    cursor: pointer; /* 클릭 가능 */
+    right: 16px;
+    cursor: pointer;
 `;
 
 const Profile = styled.img`
