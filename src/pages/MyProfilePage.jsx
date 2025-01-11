@@ -2,6 +2,7 @@ import { useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router';
 import RewardSectionWithSettings from '../components/MyProfilePage/RewardSectionMypage';
+import HistoryItem from '../components/MyProfilePage/HistoryItem';
 
 const MyProfilePage = () => {
     const navigate = useNavigate();
@@ -14,7 +15,7 @@ const MyProfilePage = () => {
         nickname: 'Runner123',
     };
 
-    // 이력 출력 로직 추가가
+    // 이력 출력 로직 추가
     const [relayHistory, setRelayHistory] = useState([
         { id: 1, date: '2025-01-10', distance: '5km', team: 'Team Alpha', status: 'inProgress', remaining: 3 },
         { id: 2, date: '2025-01-05', distance: '10km', team: 'Team Beta', status: 'completed', rewardClaimed: false },
@@ -26,6 +27,14 @@ const MyProfilePage = () => {
             status: 'failed',
             reason: '//실패 사유 알려주는 로직 추가',
         },
+        { id: 4, date: '2025-01-05', distance: '10km', team: 'Team Beta', status: 'completed', rewardClaimed: false },
+        { id: 5, date: '2025-01-05', distance: '10km', team: 'Team Beta', status: 'completed', rewardClaimed: false },
+        { id: 6, date: '2025-01-05', distance: '10km', team: 'Team Beta', status: 'completed', rewardClaimed: false },
+        { id: 7, date: '2025-01-05', distance: '10km', team: 'Team Beta', status: 'completed', rewardClaimed: false },
+        { id: 8, date: '2025-01-05', distance: '10km', team: 'Team Beta', status: 'completed', rewardClaimed: false },
+        { id: 9, date: '2025-01-05', distance: '10km', team: 'Team Beta', status: 'completed', rewardClaimed: false },
+        { id: 10, date: '2025-01-05', distance: '10km', team: 'Team Beta', status: 'completed', rewardClaimed: false },
+        { id: 11, date: '2025-01-05', distance: '10km', team: 'Team Beta', status: 'completed', rewardClaimed: false },
     ]);
 
     const handleClaimReward = (id) => {
@@ -43,37 +52,18 @@ const MyProfilePage = () => {
             /> 
 
             <h2>내 이어달리기 이력</h2>
-            <HistoryList>
+            <ScrollList>
                 {relayHistory.map((relay) => (
-                    <HistoryItem key={relay.id}>
-                        <StatusBadge status={relay.status}>
-                            {relay.status === 'inProgress' && '진행중'}
-                            {relay.status === 'completed' && '완주'}
-                            {relay.status === 'failed' && '실패'}
-                        </StatusBadge>
-                        <Content>
-                            {relay.status === 'completed' && <CompletionDate>{relay.date}</CompletionDate>}
-                            {relay.status === 'inProgress' && (
-                                <p className="info">내 이후 {relay.remaining}명이 성공 시 리워드 지급</p>
-                            )}
-                            {relay.status === 'completed' && !relay.rewardClaimed && (
-                                <RewardButton onClick={() => handleClaimReward(relay.id)}>리워드 받기</RewardButton>
-                            )}
-                            {relay.status === 'completed' && relay.rewardClaimed && (
-                                <RewardButton disabled>리워드 받음</RewardButton>
-                            )}
-                            {relay.status === 'failed' && <p className="info">{relay.reason}</p>}
-                        </Content>
-                    </HistoryItem>
+                    <HistoryItem key={relay.id} relay={relay} onClaimReward={handleClaimReward} />
                 ))}
-            </HistoryList>
+            </ScrollList>
+            
         </Container>
     );
 };
 
 export default MyProfilePage;
 
-// Styled Components
 const Container = styled.div`
     display: flex;
     flex-direction: column;
@@ -82,61 +72,15 @@ const Container = styled.div`
     min-height: 100vh;
 `;
 
-const HistoryList = styled.div`
+const ScrollList = styled.div`
     display: flex;
     flex-direction: column;
     gap: 10px;
-`;
 
-const HistoryItem = styled.div`
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    background-color: white;
-`;
+    max-height: 400px;
+    overflow-y: auto;
 
-const StatusBadge = styled.div`
-    padding: 5px 10px;
-    border-radius: 4px;
-    width: 80px;
-    text-align: center;
-    background-color: ${({ status }) =>
-        status === 'inProgress' ? 'var(--gray3-color)' : status === 'completed' ? 'var(--main-color)' : 'red'};
-    align-self: flex-start;
-`;
-
-const Content = styled.div`
-    position: relative;
-    flex: 1;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
-`;
-
-const CompletionDate = styled.p`
-    margin-left: 30px;
-    text-align: center;
-`;
-
-const RewardButton = styled.button`
-    padding: 10px 8px;
-    font-size: 10px;
-    border: none;
-    border-radius: 4px;
-    background-color: var(--main-color);
-    cursor: pointer;
-
-    &:disabled {
-        background-color: #ccc;
-        cursor: not-allowed;
-    }
-
-    &:hover:enabled {
-        filter: brightness(0.5);
-    }
-`;
+    scrollbar-width: thin;
+    scrollbar-color: var(--gray3-color) transparent;
+    border-radius: 10px;
+    `;

@@ -1,6 +1,14 @@
 import styled from 'styled-components';
 import { useNavigate, useLocation } from 'react-router-dom';
 
+import HomeIconOn from '../../assets/HomeIcon-on.svg';
+import HomeIconOff from '../../assets/HomeIcon-off.svg';
+import RelayIconOn from '../../assets/MakeRelayIcon-on.svg';
+import RelayIconOff from '../../assets/MakeRelayIcon-off.svg';
+import ProfileIconOn from '../../assets/MyProfileIcon-on.svg';
+import ProfileIconOff from '../../assets/MyProfileIcon-off.svg';
+
+
 export default function Footer() {
     const navigate = useNavigate();
     const location = useLocation();
@@ -9,15 +17,20 @@ export default function Footer() {
         navigate(path);
     };
 
+    const isActive = (path) => location.pathname === path;
+
     return (
         <FooterContainer>
             <NavItem onClick={() => handleNavigation('/')}>
+                <NavIcon src={isActive('/') ? HomeIconOn : HomeIconOff} alt="Home" />
                 <NavText active={location.pathname === '/'}>Home</NavText>
             </NavItem>
             <NavItem onClick={() => handleNavigation('/makereplay')}>
+            <NavIcon src={isActive('/makereplay') ? RelayIconOn : RelayIconOff} alt="Make Relay" />
                 <NavText active={location.pathname === '/makereplay'}>Make Relay</NavText>
             </NavItem>
             <NavItem onClick={() => handleNavigation('/myprofile')}>
+            <NavIcon src={isActive('/myprofile') ? ProfileIconOn : ProfileIconOff} alt="My Profile" />
                 <NavText active={location.pathname === '/myprofile'}>My Profile</NavText>
             </NavItem>
         </FooterContainer>
@@ -53,4 +66,9 @@ const NavText = styled.span`
     margin-top: 4px;
     font-size: 0.9rem;
     color: ${(props) => (props.active ? 'var(--main-color)' : '#cccccc')};
+`;
+
+const NavIcon = styled.img`
+    width: 24px;
+    height: 24px;
 `;
