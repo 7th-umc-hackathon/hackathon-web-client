@@ -4,13 +4,15 @@ import styled from 'styled-components';
 import MissionApplyButton from '../../assets/icon/mission-apply-button.svg';
 import MakeMissionButton from '../../assets/icon/make-mission-button.svg';
 import MissionProgressComponent from './MissionProgressComponent';
-
+import { useNavigate } from 'react-router-dom';
+import Bulb from '../../assets/icon/bulb-icon.svg';
+import Plus from '../../assets/icon/plus-icon.svg';
 const MissionSection = () => {
     const [isMissionSelected, setIsMissionSelected] = useState(false);
     const [selectedPeople, setSelectedPeople] = useState('');
     const [missionName, setMissionName] = useState('페트병 5개 줍기');
     const [isMissionConfirmed, setIsMissionConfirmed] = useState(false);
-
+    const navigate = useNavigate();
     const fetchNewMission = async () => {
         // API 호출 예시 (미션 이름 받아오기)
         // 실제 API 요청으로 대체 필요
@@ -28,6 +30,10 @@ const MissionSection = () => {
 
     const handleMissionApplyClick = () => {
         setIsMissionSelected(true);
+    };
+
+    const handleMakeMissionClick = () => {
+        navigate('/joinrelay');
     };
     if (isMissionConfirmed) {
         return <MissionProgressComponent missionTitle={missionName} />;
@@ -57,12 +63,17 @@ const MissionSection = () => {
                 </MissionDetail>
             ) : (
                 <MissionCards>
-                    <MissionCard onClick={handleMissionApplyClick}>
-                        <MissionIcon src={MissionApplyButton} alt="Mission Apply Button" />
-                    </MissionCard>
-                    <MissionCard>
-                        <MissionIcon src={MakeMissionButton} alt="Make Mission Button" />
-                    </MissionCard>
+                    <MissionCard1 onClick={handleMissionApplyClick}>
+                        <Icon src={Bulb} alt="Bulb Icon" />
+                        <ButtonText1>
+                            이어달리기
+                            <br /> 미션 받기
+                        </ButtonText1>
+                    </MissionCard1>
+                    <MissionCard2 onClick={handleMakeMissionClick}>
+                        <Icon src={Plus} alt="Plus Icon" />
+                        <ButtonText2>이어달리기 미션 만들기</ButtonText2>
+                    </MissionCard2>
                 </MissionCards>
             )}
         </Container>
@@ -83,18 +94,66 @@ const Container = styled.div`
 const MissionCards = styled.div`
     display: flex;
     justify-content: space-between;
-    gap: 12px;
     width: 100%;
 `;
 
-const MissionCard = styled.div``;
+const MissionCard1 = styled.div`
+    display: flex;
+    width: 150px;
+    padding: 16px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 8px;
+    flex-shrink: 0;
+    border-radius: 12px;
+    background: var(--Main-Color2, #3ee187);
 
-const MissionIcon = styled.img`
+    box-shadow: 0px 0px 8px 0px rgba(62, 225, 135, 0.15);
     &:hover {
         transform: scale(1.05);
     }
 `;
+const MissionCard2 = styled.div`
+    display: flex;
+    width: 150px;
+    padding: 16px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 8px;
+    flex-shrink: 0;
+    border-radius: 12px;
+    border: 1px solid var(--Main-Color2, #3ee187);
+    background: #fff;
 
+    /* 기본2 */
+    box-shadow: 0px 0px 8px 0px rgba(62, 225, 135, 0.15);
+    &:hover {
+        transform: scale(1.05);
+    }
+`;
+const Icon = styled.img``;
+
+const ButtonText1 = styled.div`
+    color: #fff;
+    font-family: 'Noto Sans KR';
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    letter-spacing: 0.016px;
+    /* 기본2 */
+`;
+const ButtonText2 = styled.div`
+    color: var(--Main-Color2, #3ee187);
+    font-family: 'Noto Sans KR';
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    letter-spacing: 0.016px;
+`;
 const MissionDetail = styled.div`
     width: 320px;
     padding: 20px;

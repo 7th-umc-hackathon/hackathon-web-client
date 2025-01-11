@@ -1,8 +1,9 @@
 import styled from 'styled-components';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 export default function Footer() {
     const navigate = useNavigate();
+    const location = useLocation();
 
     const handleNavigation = (path) => {
         navigate(path);
@@ -11,13 +12,13 @@ export default function Footer() {
     return (
         <FooterContainer>
             <NavItem onClick={() => handleNavigation('/')}>
-                <NavText>Home</NavText>
+                <NavText active={location.pathname === '/'}>Home</NavText>
             </NavItem>
             <NavItem onClick={() => handleNavigation('/makereplay')}>
-                <NavText>Make Relay</NavText>
+                <NavText active={location.pathname === '/makereplay'}>Make Relay</NavText>
             </NavItem>
             <NavItem onClick={() => handleNavigation('/myprofile')}>
-                <NavText>My Profile</NavText>
+                <NavText active={location.pathname === '/myprofile'}>My Profile</NavText>
             </NavItem>
         </FooterContainer>
     );
@@ -46,17 +47,10 @@ const NavItem = styled.div`
     flex-direction: column;
     align-items: center;
     cursor: pointer;
-
-    &:hover svg {
-        fill: var(--main-color); /* 아이콘 색상 변경 */
-    }
-    &:hover span {
-        color: var(--main-color); /* 텍스트 색상 변경 */
-    }
 `;
 
 const NavText = styled.span`
     margin-top: 4px;
     font-size: 0.9rem;
-    color: #cccccc; /* 기본 텍스트 색상 */
+    color: ${(props) => (props.active ? 'var(--main-color)' : '#cccccc')};
 `;

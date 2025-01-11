@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import Webcam from 'react-webcam';
 import { useNavigate, useLocation } from 'react-router-dom';
 import BackIcon from '../assets/icon/back-icon.svg';
+import CaptureButtonIcon from '../assets/icon/capture-button.svg';
 
 export default function CapturePage() {
     const location = useLocation();
@@ -58,17 +59,25 @@ export default function CapturePage() {
                     )}
                 </PreviewContainer>
             ) : (
-                <WebcamContainer>
-                    <Webcam
-                        ref={webcamRef}
-                        audio={false}
-                        screenshotFormat="image/jpeg"
-                        videoConstraints={{
-                            facingMode: 'environment', // 후면 카메라
-                        }}
-                    />
-                    <CaptureButton onClick={captureImage}>촬영</CaptureButton>
-                </WebcamContainer>
+                <>
+                    <WebcamContainer>
+                        <Webcam
+                            ref={webcamRef}
+                            audio={false}
+                            screenshotFormat="image/jpeg"
+                            videoConstraints={{
+                                width: 360,
+                                height: 536,
+                                facingMode: 'environment', // 후면 카메라 우선
+                            }}
+                        />
+                    </WebcamContainer>
+                    <BottomBar>
+                        <CaptureButton onClick={captureImage}>
+                            <CaptureButtonImg src={CaptureButtonIcon} alt="Capture Button" />
+                        </CaptureButton>
+                    </BottomBar>
+                </>
             )}
         </Container>
     );
@@ -77,7 +86,6 @@ export default function CapturePage() {
 const Container = styled.div`
     display: flex;
     flex-direction: column;
-    height: 100vh;
     background-color: #000; /* 어두운 톤 */
     color: #fff;
 `;
@@ -86,7 +94,12 @@ const TopBar = styled.div`
     display: flex;
     align-items: center;
     background: var(--Gray-1, #333);
-    padding: 10px 20px;
+    display: flex;
+    height: 60px;
+    padding: 8px 94px 8px 20px;
+    align-items: center;
+    gap: 50px;
+    flex-shrink: 0;
     color: #fff;
 `;
 
@@ -95,8 +108,7 @@ const BackButton = styled.div`
 `;
 
 const BackIconImg = styled.img`
-    width: 24px;
-    height: 24px;
+    margin-top: 2px;
 `;
 
 const MissionName = styled.div`
@@ -108,23 +120,24 @@ const MissionName = styled.div`
 
 const WebcamContainer = styled.div`
     display: flex;
-    flex-direction: column;
-    align-items: center;
     justify-content: center;
-    flex: 1;
+    align-items: center;
+    width: 360px;
+    height: 607px;
 `;
 
-const CaptureButton = styled.button`
-    margin-top: 20px;
-    padding: 10px 20px;
-    background-color: #3ee187;
-    border: none;
-    border-radius: 8px;
-    color: #fff;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
+const BottomBar = styled.div`
+    width: 360px;
+    height: 72px;
+    background: var(--Gray-1, #333);
+    display: flex;
+    justify-content: center;
+    align-items: center;
 `;
+
+const CaptureButton = styled.button``;
+
+const CaptureButtonImg = styled.img``;
 
 const PreviewContainer = styled.div`
     display: flex;
@@ -135,8 +148,8 @@ const PreviewContainer = styled.div`
 `;
 
 const PreviewImage = styled.img`
-    max-width: 100%;
-    max-height: 70vh;
+    width: 360px;
+    height: 536px;
     margin-bottom: 20px;
 `;
 
