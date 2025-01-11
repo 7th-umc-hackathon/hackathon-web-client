@@ -51,6 +51,7 @@ export default function CapturePage() {
             } else {
                 setIsFailModalOpen(true);
                 // setIsOkModalOpen(true);
+                // 뒤 플로우 테스트를 위해 조절하여 사용 !!
             }
         } catch (error) {
             console.error('서버 전송 오류:', error);
