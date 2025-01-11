@@ -1,17 +1,16 @@
 import { createGlobalStyle } from 'styled-components';
 import reset from 'styled-reset';
 
-// Pretendard font imports
-import PretendardRegular from '../assets/fonts/Pretendard-Regular.woff2';
-import PretendardBold from '../assets/fonts/Pretendard-Bold.woff2';
+import NotoSansRegular from '../assets/fonts/NotoSansKR-Regular.woff';
+import NotoSansBold from '../assets/fonts/NotoSansKR-Bold.woff';
 
 const GlobalStyles = createGlobalStyle`
   ${reset}
 
   @font-face {
-    font-family: 'Pretendard';
-    src: url(${PretendardRegular}) format('woff2'),
-         url(${PretendardBold}) format('woff2');
+    font-family: 'NotoSans';
+    src: url(${NotoSansRegular}) format('woff'),
+         url(${NotoSansBold}) format('woff');
     font-style: normal;
   }
 
@@ -26,7 +25,7 @@ const GlobalStyles = createGlobalStyle`
   }
 
   body {
-    font-family: 'Pretendard', sans-serif;
+    font-family: 'NotoSans', sans-serif;
     font-size: 1.6rem;
     line-height: 1.6;
     margin: 0;
