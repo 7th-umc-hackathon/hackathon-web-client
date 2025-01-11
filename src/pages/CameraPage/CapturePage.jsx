@@ -2,8 +2,8 @@ import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
 import Webcam from 'react-webcam';
 import { useNavigate, useLocation } from 'react-router-dom';
-import BackIcon from '../assets/icon/back-icon.svg';
-import CaptureButtonIcon from '../assets/icon/capture-button.svg';
+import BackIcon from '../../assets/icon/back-icon.svg';
+import CaptureButtonIcon from '../../assets/icon/capture-button.svg';
 
 export default function CapturePage() {
     const location = useLocation();
