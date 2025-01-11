@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 
+
 const RewardSectionWithSettings = ({ name, points, countryRank, personalRank, profileImage, onClick  }) => {
     return (
         <Container>
