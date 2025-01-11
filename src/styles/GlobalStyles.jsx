@@ -40,7 +40,7 @@ const GlobalStyles = createGlobalStyle`
     line-height: 1.6;
     margin: 0;
     padding: 0;
-    background-color: #f8f9fa;
+     background-color: ${({ theme }) => theme.colors.base};
     overflow-x: hidden;
     width: 360px;
     height: 740px;
