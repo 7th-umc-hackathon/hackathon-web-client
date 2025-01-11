@@ -3,7 +3,6 @@ import styled from 'styled-components';
 
 const FooterContainer = styled.footer`
     position: fixed;
-    bottom: 0;
     left: 50%;
     transform: translateX(-50%);
     width: 100%; /* 부모 컨테이너에 종속 */

@@ -1,20 +1,29 @@
 import { createGlobalStyle } from 'styled-components';
 import reset from 'styled-reset';
 
-// Pretendard font imports
-import PretendardRegular from '../assets/fonts/Pretendard-Regular.woff2';
-import PretendardBold from '../assets/fonts/Pretendard-Bold.woff2';
+import NotoSansRegular from '../assets/fonts/NotoSansKR-Regular.woff';
+import NotoSansBold from '../assets/fonts/NotoSansKR-Bold.woff';
 
 const GlobalStyles = createGlobalStyle`
   ${reset}
 
   @font-face {
-    font-family: 'Pretendard';
-    src: url(${PretendardRegular}) format('woff2'),
-         url(${PretendardBold}) format('woff2');
+    font-family: 'NotoSans';
+    src: url(${NotoSansRegular}) format('woff'),
+         url(${NotoSansBold}) format('woff');
     font-style: normal;
   }
-
+ :root {
+    --main-color: #41FA94;
+    --secondary-color: #6DBBFF;
+    --base-color: #F4F4F4;
+    --gray1-color: #333333;
+    --gray2-color: #4f4f4f;
+    --gray3-color: #828282;
+    --gray4-color: #bdbdbd;
+    --gray5-color: #e0e0e0;
+    --gray6-color: #f2f2f2;
+  }
   *, *::before, *::after {
     box-sizing: border-box;
   }
@@ -26,17 +35,14 @@ const GlobalStyles = createGlobalStyle`
   }
 
   body {
-    font-family: 'Pretendard', sans-serif;
+    font-family: 'NotoSans', sans-serif;
     font-size: 1.6rem;
     line-height: 1.6;
-    margin: 0;
-    padding: 0;
-    background-color: #f8f9fa;
+    max-width: 420px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin: 0 auto;
+    min-height: 100vh;
     overflow-x: hidden;
-    width: 360px;
-    height: 740px;
-    margin: auto; /* 화면 가운데 정렬 */
-    border : 1px solid black;
   }
 
   a {
