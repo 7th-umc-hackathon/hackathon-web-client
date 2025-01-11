@@ -25,7 +25,7 @@ export default function CapturePage() {
         if (!capturedImage) return;
 
         try {
-            const response = await fetch('https://example.com/api/mission/verify', {
+            const response = await fetch('http://test2.shop:42021/relays/mission/complete', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ image: capturedImage }),
