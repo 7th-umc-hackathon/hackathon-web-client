@@ -9,7 +9,7 @@ import Navbar from './components/common/Navbar.jsx';
 
 const Main = () => {
     const location = useLocation();
-    const isNavbarHidden = ['/capture', '/signup', '/', '/signup-success'].includes(location.pathname); // Navbar를 숨길 경로 확인
+    const isNavbarHidden = ['/capture', '/signup', '/', '/signup-success', '/joinrelay'].includes(location.pathname); // Navbar를 숨길 경로 확인
 
     return (
         <>

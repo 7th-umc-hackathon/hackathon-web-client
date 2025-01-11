@@ -1,4 +1,4 @@
-// PreRelayMainPage.js
+// MainPage.js
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import RewardSection from '../components/PreRelayMainPage/RewardSection';
@@ -6,7 +6,7 @@ import MissionSection from '../components/PreRelayMainPage/MissionSection';
 import MissionProgressComponent from '../components/PreRelayMainPage/MissionProgressComponent';
 import { getRequest } from '../services/api';
 
-const PreRelayMainPage = () => {
+const MainPage = () => {
     const [relayStatus, setRelayStatus] = useState(null);
     const [missionTitle, setMissionTitle] = useState('');
 
@@ -48,9 +48,8 @@ const PreRelayMainPage = () => {
     );
 };
 
-export default PreRelayMainPage;
+export default MainPage;
 
-// Styled-components
 const Container = styled.div`
     display: flex;
     flex-direction: column;
