@@ -38,14 +38,11 @@ const GlobalStyles = createGlobalStyle`
     font-family: 'NotoSans', sans-serif;
     font-size: 1.6rem;
     line-height: 1.6;
-    margin: 0;
-    padding: 0;
-     background-color: ${({ theme }) => theme.colors.base};
+    max-width: 420px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin: 0 auto;
+    min-height: 100vh;
     overflow-x: hidden;
-    width: 360px;
-    height: 740px;
-    margin: auto; /* 화면 가운데 정렬 */
-    border : 1px solid black;
   }
 
   a {
