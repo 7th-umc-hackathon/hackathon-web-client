@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 const SignupPage = () => {
     const [nickname, setNickname] = useState('');
     const [userId, setUserId] = useState('');
+    const [name, setName] = useState(''); // 이름 입력 필드 추가
     const [isUsernameValid, setIsUsernameValid] = useState(null); // 중복 확인 상태
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
@@ -25,6 +26,7 @@ const SignupPage = () => {
     const isFormValid =
         nickname &&
         userId &&
+        name && // 이름 필드 추가
         isUsernameValid === true &&
         password &&
         confirmPassword &&
@@ -78,7 +80,7 @@ const SignupPage = () => {
     };
 
     const handleSignup = async (e) => {
-        e.preventDefault(); // 기본 동작 방지
+        e.preventDefault(); // 폼 제출 방지
 
         if (password !== confirmPassword) {
             alert('비밀번호가 일치하지 않습니다.');
@@ -92,18 +94,19 @@ const SignupPage = () => {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    login_id: userId,
-                    password,
-                    name: nickname,
-                    email,
-                    country_id: countryId,
+                    login_id: userId, // 아이디
+                    password, // 비밀번호
+                    name, // 이름
+                    nickname, // 닉네임
+                    email, // 이메일
+                    country_id: countryId, // 국가
                 }),
             });
 
             if (response.ok) {
                 const data = await response.json();
-                alert(data.message);
-                navigate('/');
+                alert(data.message); // 성공 메시지 출력
+                navigate('/'); // 홈으로 이동
             } else {
                 const errorData = await response.json();
                 alert(`회원가입 실패: ${errorData.message}`);
@@ -120,7 +123,6 @@ const SignupPage = () => {
                 <BackButton src={BackIcon} alt="Back" onClick={handleBack} />
                 <Title>회원가입</Title>
             </TopBar>
-            {/* onSubmit 이벤트로만 회원가입 요청이 실행되도록 보장 */}
             <Form onSubmit={handleSignup}>
                 <InputWrapper>
                     <Input
@@ -131,13 +133,21 @@ const SignupPage = () => {
                     />
                 </InputWrapper>
                 <InputWrapper>
+                    <Input type="text" placeholder="이름" value={name} onChange={(e) => setName(e.target.value)} />
+                </InputWrapper>
+                <InputWrapper>
                     <IdInput
                         type="text"
                         placeholder="아이디"
                         value={userId}
                         onChange={(e) => setUserId(e.target.value)}
                     />
-                    <DuplicateCheckButton onClick={handleDuplicateCheck}>중복 확인</DuplicateCheckButton>
+                    <DuplicateCheckButton type="button" onClick={handleDuplicateCheck}>
+                        중복 확인
+                    </DuplicateCheckButton>
+                </InputWrapper>
+                <InputWrapper>
+                    <Input type="text" placeholder="이름" value={name} onChange={(e) => setName(e.target.value)} />
                 </InputWrapper>
                 <InputWrapper>
                     <Input
@@ -168,7 +178,7 @@ const SignupPage = () => {
                 <InputWrapper>
                     <EmailInput
                         type="text"
-                        placeholder="이메일 아이디"
+                        placeholder="이메일"
                         value={emailLocalPart}
                         onChange={(e) => setEmailLocalPart(e.target.value)}
                     />
@@ -337,7 +347,6 @@ const Select = styled.select`
 const SubmitButton = styled.button`
     display: flex;
     width: 100%;
-    margin-top: 154px;
     margin-bottom: 15px;
     max-width: 360px;
     padding: 12px;
