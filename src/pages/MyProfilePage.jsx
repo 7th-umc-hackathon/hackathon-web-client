@@ -1,22 +1,20 @@
 import { useState } from 'react';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router';
+import RewardSectionWithSettings from '../components/MyProfilePage/RewardSectionMypage';
 
 const MyProfilePage = () => {
-    const rewards = 100;
-    const countryRank = 5;
-    const personalRank = 10;
+    const navigate = useNavigate();
+    const handleNavigation = (path) => {
+        navigate(path);
+    };
 
+    // 닉네임 로직 추가
     const userInfo = {
-        id: 'user123',
         nickname: 'Runner123',
-        nationality: 'South Korea',
-        email: 'runner123@example.com',
     };
 
-    const handleLogout = () => {
-        alert('로그아웃 되었습니다.');
-    };
-
+    // 이력 출력 로직 추가가
     const [relayHistory, setRelayHistory] = useState([
         { id: 1, date: '2025-01-10', distance: '5km', team: 'Team Alpha', status: 'inProgress', remaining: 3 },
         { id: 2, date: '2025-01-05', distance: '10km', team: 'Team Beta', status: 'completed', rewardClaimed: false },
@@ -36,31 +34,13 @@ const MyProfilePage = () => {
 
     return (
         <Container>
-            {/* <RewardsSection>
-        <RewardItem>현재 내 리워드는 {rewards}점</RewardItem>
-        <RewardItem>국가 순위 {countryRank}위</RewardItem>
-        <RewardItem>개인 순위 {personalRank}위</RewardItem>
-      </RewardsSection> */}
-
-            <UserInfoSection>
-                <InfoRow>
-                    <Label>아이디</Label>
-                    <Value>{userInfo.id}</Value>
-                </InfoRow>
-                <InfoRow>
-                    <Label>닉네임</Label>
-                    <Value>{userInfo.nickname}</Value>
-                </InfoRow>
-                <InfoRow>
-                    <Label>국적</Label>
-                    <Value>{userInfo.nationality}</Value>
-                </InfoRow>
-                <InfoRow>
-                    <Label>이메일</Label>
-                    <Value>{userInfo.email}</Value>
-                </InfoRow>
-            </UserInfoSection>
-            <LogoutButton onClick={handleLogout}>로그아웃</LogoutButton>
+            <RewardSectionWithSettings
+                name={userInfo.nickname}
+                points={100}
+                countryRank={5}
+                personalRank={10}
+                onClick={() => handleNavigation('/myinformation')}
+            /> 
 
             <h2>내 이어달리기 이력</h2>
             <HistoryList>
@@ -100,49 +80,6 @@ const Container = styled.div`
     gap: 20px;
     padding: 20px;
     min-height: 100vh;
-`;
-
-const UserInfoSection = styled.div`
-    padding: 20px;
-    background-color: white;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    position: relative; /* 로그아웃 버튼과 위치 조정을 위해 */
-`;
-
-const InfoRow = styled.div`
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-`;
-
-const Label = styled.span`
-    font-size: 16px;
-    font-weight: bold;
-    flex: 1;
-    text-align: left;
-`;
-
-const Value = styled.span`
-    font-size: 16px;
-    flex: 2;
-    text-align: center;
-`;
-
-const LogoutButton = styled.button`
-    margin-top: -12px;
-    align-self: flex-end;
-    padding: 8px 15px;
-    border: none;
-    background-color: var(--gray3-color);
-    cursor: pointer;
-
-    &:hover {
-        filter: brightness(0.5);
-    }
 `;
 
 const HistoryList = styled.div`
