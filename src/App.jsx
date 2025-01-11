@@ -1,5 +1,5 @@
 import { Routes, Route } from 'react-router-dom';
-import Main from './pages/Main';
+import Main from './pages/PreRelayMainPlage';
 function App() {
     return (
         <div className="App">
