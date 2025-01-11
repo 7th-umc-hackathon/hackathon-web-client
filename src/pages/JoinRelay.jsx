@@ -1,10 +1,13 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router";
 import styled from "styled-components";
 import theme from "../styles/theme";
 import CheckedIcon from "../assets/icon/checked-icon.svg";
 import UncheckedIcon from "../assets/icon/unchecked-icon.svg";
 
 function JoinRelay() {
+  const navigate = useNavigate();
+
   const [isCreated, setIsCreated] = useState(false); // 버튼 상태 관리
   const [missionText, setMissionText] = useState(""); // 전달받은 미션
   const [isConfirmed, setIsConfirmed] = useState(false);
@@ -32,7 +35,13 @@ function JoinRelay() {
   };
 
   const handleCheckboxClick = () => {
-    setIsChecked((prev) => !prev); // 클릭 시 상태 토글
+    setIsChecked((prev) => !prev);
+  };
+
+  const handleMakeRelayClick = () => {
+    if (isMakeRelayActive) {
+      navigate("/premain");
+    }
   };
 
   return (
@@ -46,9 +55,6 @@ function JoinRelay() {
             <div id="mission-box">
               <MissionBox>{missionText}</MissionBox>
             </div>
-            {/* <CreateBtn isCreated={isCreated} onClick={handleButtonClick}>
-              {isCreated ? "재 생성" : "생성"}
-            </CreateBtn> */}
             {!isConfirmed && (
               <CreateBtn isCreated={isCreated} onClick={handleButtonClick}>
                 {isCreated ? "재 생성" : "생성"}
@@ -104,7 +110,9 @@ function JoinRelay() {
           </CheckboxContainer>
         </AgreeContainer>
       </ContentContainer>
-      <MakeRelay active={isMakeRelayActive}>이어달리기 개설하기</MakeRelay>
+      <MakeRelay active={isMakeRelayActive} onClick={handleMakeRelayClick}>
+        이어달리기 개설하기
+      </MakeRelay>
     </Container>
   );
 }
