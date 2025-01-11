@@ -25,7 +25,7 @@ const SignupPage = () => {
     const isFormValid =
         nickname &&
         userId &&
-        isUsernameValid &&
+        isUsernameValid === true &&
         password &&
         confirmPassword &&
         emailLocalPart &&
@@ -78,7 +78,7 @@ const SignupPage = () => {
     };
 
     const handleSignup = async (e) => {
-        e.preventDefault();
+        e.preventDefault(); // 기본 동작 방지
 
         if (password !== confirmPassword) {
             alert('비밀번호가 일치하지 않습니다.');
@@ -120,6 +120,7 @@ const SignupPage = () => {
                 <BackButton src={BackIcon} alt="Back" onClick={handleBack} />
                 <Title>회원가입</Title>
             </TopBar>
+            {/* onSubmit 이벤트로만 회원가입 요청이 실행되도록 보장 */}
             <Form onSubmit={handleSignup}>
                 <InputWrapper>
                     <Input
