@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Base URL 설정
 const apiClient = axios.create({
-    baseURL: 'test2.shop:42021', // API의 기본 URL을 여기에 설정
+    baseURL: 'http://test2.shop:42021', // API의 기본 URL을 여기에 설정
     timeout: 10000, // 요청 타임아웃
 });
 

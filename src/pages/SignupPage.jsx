@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 const SignupPage = () => {
     const [nickname, setNickname] = useState('');
     const [userId, setUserId] = useState('');
+    const [name, setName] = useState(''); // 이름 입력 필드 추가
     const [isUsernameValid, setIsUsernameValid] = useState(null); // 중복 확인 상태
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
@@ -25,7 +26,8 @@ const SignupPage = () => {
     const isFormValid =
         nickname &&
         userId &&
-        isUsernameValid &&
+        name && // 이름 필드 추가
+        isUsernameValid === true &&
         password &&
         confirmPassword &&
         emailLocalPart &&
@@ -94,7 +96,8 @@ const SignupPage = () => {
                 body: JSON.stringify({
                     login_id: userId,
                     password,
-                    name: nickname,
+                    name,
+                    nickname,
                     email,
                     country_id: countryId,
                 }),
@@ -103,7 +106,7 @@ const SignupPage = () => {
             if (response.ok) {
                 const data = await response.json();
                 alert(data.message);
-                navigate('/');
+                navigate('/signup-success', { state: { nickname } }); // 성공 페이지로 이동
             } else {
                 const errorData = await response.json();
                 alert(`회원가입 실패: ${errorData.message}`);
@@ -130,14 +133,20 @@ const SignupPage = () => {
                     />
                 </InputWrapper>
                 <InputWrapper>
+                    <Input type="text" placeholder="이름" value={name} onChange={(e) => setName(e.target.value)} />
+                </InputWrapper>
+                <InputWrapper>
                     <IdInput
                         type="text"
                         placeholder="아이디"
                         value={userId}
                         onChange={(e) => setUserId(e.target.value)}
                     />
-                    <DuplicateCheckButton onClick={handleDuplicateCheck}>중복 확인</DuplicateCheckButton>
+                    <DuplicateCheckButton type="button" onClick={handleDuplicateCheck}>
+                        중복 확인
+                    </DuplicateCheckButton>
                 </InputWrapper>
+
                 <InputWrapper>
                     <Input
                         type={showPassword ? 'text' : 'password'}
@@ -167,7 +176,7 @@ const SignupPage = () => {
                 <InputWrapper>
                     <EmailInput
                         type="text"
-                        placeholder="이메일 아이디"
+                        placeholder="이메일"
                         value={emailLocalPart}
                         onChange={(e) => setEmailLocalPart(e.target.value)}
                     />
@@ -336,7 +345,7 @@ const Select = styled.select`
 const SubmitButton = styled.button`
     display: flex;
     width: 100%;
-    margin-top: 154px;
+    margin-top: 120px;
     margin-bottom: 15px;
     max-width: 360px;
     padding: 12px;
