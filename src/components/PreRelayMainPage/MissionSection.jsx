@@ -4,13 +4,14 @@ import styled from 'styled-components';
 import MissionApplyButton from '../../assets/icon/mission-apply-button.svg';
 import MakeMissionButton from '../../assets/icon/make-mission-button.svg';
 import MissionProgressComponent from './MissionProgressComponent';
+import { useNavigate } from 'react-router-dom';
 
 const MissionSection = () => {
     const [isMissionSelected, setIsMissionSelected] = useState(false);
     const [selectedPeople, setSelectedPeople] = useState('');
     const [missionName, setMissionName] = useState('페트병 5개 줍기');
     const [isMissionConfirmed, setIsMissionConfirmed] = useState(false);
-
+    const navigate = useNavigate();
     const fetchNewMission = async () => {
         // API 호출 예시 (미션 이름 받아오기)
         // 실제 API 요청으로 대체 필요
@@ -28,6 +29,10 @@ const MissionSection = () => {
 
     const handleMissionApplyClick = () => {
         setIsMissionSelected(true);
+    };
+
+    const handleMakeMissionClick = () => {
+        navigate('/joinrelay');
     };
     if (isMissionConfirmed) {
         return <MissionProgressComponent missionTitle={missionName} />;
@@ -60,7 +65,7 @@ const MissionSection = () => {
                     <MissionCard onClick={handleMissionApplyClick}>
                         <MissionIcon src={MissionApplyButton} alt="Mission Apply Button" />
                     </MissionCard>
-                    <MissionCard>
+                    <MissionCard onClick={handleMakeMissionClick}>
                         <MissionIcon src={MakeMissionButton} alt="Make Mission Button" />
                     </MissionCard>
                 </MissionCards>
