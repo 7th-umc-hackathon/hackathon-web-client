@@ -5,7 +5,7 @@ import PostMain from './pages/PostRelayMainPage';
 // import Footer from './components/Layout/footer';
 import SignupPage from './pages/SignupPage';
 import MyProfilePage from './pages/MyProfilePage';
-import CapturePage from './pages/CapturePage';
+import CapturePage from './pages/CameraPage/CapturePage';
 import JoinRelay from './pages/JoinRelay';
 import RunningRelay from './pages/RunningRelay';
 function App() {
