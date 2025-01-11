@@ -8,6 +8,7 @@ import MyProfilePage from './pages/MyProfilePage';
 import CapturePage from './pages/CameraPage/CapturePage';
 import JoinRelay from './pages/JoinRelay';
 import RunningRelay from './pages/RunningRelay';
+
 function App() {
     return (
         <div className="App">
@@ -18,8 +19,10 @@ function App() {
                 <Route path="/signup" element={<SignupPage />} />
                 <Route path="/myprofile" element={<MyProfilePage />} />
                 <Route path="/capture" element={<CapturePage />} />
+                <Route path="/myinformation" element={<InformationPage />} />
                 <Route path="/joinrelay" element={<JoinRelay />} />
                 <Route path="/runningrelay" element={<RunningRelay />} />
+
             </Routes>
             {/* <Footer /> */}
         </div>
