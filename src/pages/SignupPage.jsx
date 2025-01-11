@@ -20,12 +20,12 @@ const SignupPage = () => {
     useEffect(() => {
         const fetchCountries = async () => {
             try {
-                const response = await fetch('test2.shop:42021/auth/countries', {
+                const response = await fetch('http://test2.shop:42021/auth/countries', {
                     method: 'GET',
                     headers: {'Content-Type':'application/json'},
                 });
-                console.log(response)
                 const data = await response.json();
+                console.log('나라 목록 데이터:', data);
                 setCountries(data.countries);
             } catch (error) {
                 console.error('나라 선택 오류:', error);
@@ -37,7 +37,7 @@ const SignupPage = () => {
     // 아이디 중복 확인
     const handleDuplicateCheck = async () => {
         try {
-            const response = await fetch('test2.shop:42021/auth/id/unique', {
+            const response = await fetch('http://test2.shop:42021/auth/id/unique', {
                 method: 'POST',
                 headers: { 'Content-Type':'application/json;charset=utf-8'},
                 body: JSON.stringify({ 
@@ -59,7 +59,7 @@ const SignupPage = () => {
     const handleSignup = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch('/auth/register/local', {
+            const response = await fetch('http:///auth/register/local', {
                 method: 'POST',
                 headers: { 'Content-Type':'application/json;charset=utf-8' },
                 body: JSON.stringify({
@@ -123,8 +123,7 @@ const SignupPage = () => {
                 
                 <Select
                     value={countryId}
-                    onChange={(e) => setCountryId(e.target.value)}
-                >
+                    onChange={(e) => setCountryId(e.target.value)}>
                     <option value="" disabled>국가를 선택해주세요</option>
                     {countries.map((country) => (
                         <option key={country.country_id} value={country.country_id}>
