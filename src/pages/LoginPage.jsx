@@ -20,7 +20,7 @@ const LoginPage = () => {
 
     useEffect(() => {
         if (isLoggedIn()) {
-            navigate('/premain');
+            navigate('/main');
         }
     }, [navigate]);
 
@@ -37,7 +37,7 @@ const LoginPage = () => {
                     const accessToken = response.data.success.access_token;
                     localStorage.setItem('accessToken', accessToken); // localStorage에 토큰 저장
                     alert('로그인 성공!');
-                    navigate('/premain');
+                    navigate('/main');
                 } else {
                     alert(`로그인 실패: ${response.data.error || '알 수 없는 오류'}`);
                 }
@@ -119,18 +119,34 @@ const LogoImage = styled.img`
 `;
 
 const Input = styled.input`
-    margin-bottom: 15px;
+    margin-bottom: 30px;
     padding: 10px;
     font-size: 14px;
     background-color: transparent;
-    border-top: none;
-    border-left: none;
-    border-right: none;
+    border: none;
     border-bottom: 1px solid var(--gray4-color);
+    width: 100%;
 
     &:focus {
         border-bottom: 1px solid var(--main-color);
+        outline: none;
     }
+`;
+
+const PasswordWrapper = styled.div`
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+`;
+
+const PasswordIcon = styled.img`
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    position: absolute;
+    right: 10px;
+    transform: translateY(-50%);
 `;
 
 const Button = styled.button`
@@ -140,26 +156,10 @@ const Button = styled.button`
     cursor: pointer;
 `;
 
-const PasswordWrapper = styled.div`
-    position: relative;
-    display: flex;
-    align-items: center;
-`;
-
-const PasswordIcon = styled.img`
-    width: 15px;
-    height: 15px;
-    cursor: pointer;
-    position: absolute;
-    right: 10px;
-    transform: translateY(-50%);
-    z-index: 1;
-`;
-
 const EtcContainer = styled.div`
     display: flex;
     justify-content: center;
-    margin-top: 10px;
+    margin-top: 20px;
 `;
 
 const EtcText = styled.div`

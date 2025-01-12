@@ -35,8 +35,12 @@ const Navbar = () => {
                     <FlagText>{countryData.cca3}</FlagText>
                 </FlagContainer>
             </FlagWrapper>
-            <Logo src={LogoImage} alt="Logo" />
-            <ProfileWrapper onClick={() => navigate('/mypage')}>
+            <Logo
+                src={LogoImage}
+                alt="Logo"
+                onClick={() => navigate('/main')} // 클릭 시 /main 이동
+            />
+            <ProfileWrapper onClick={() => navigate('/myprofile')}>
                 <Profile src={ProfileIcon} alt="Profile Icon" />
             </ProfileWrapper>
         </NavbarContainer>
@@ -89,6 +93,7 @@ const FlagText = styled.div`
 const Logo = styled.img`
     width: 100px;
     height: auto;
+    cursor: pointer; // 클릭 가능하도록 커서 변경
 `;
 
 const ProfileWrapper = styled.div`

@@ -1,85 +1,99 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router";
-import styled from "styled-components";
-import { getRequest } from "../../services/api";
+import React, { useEffect, useState } from 'react';
+import styled from 'styled-components';
+import { getRequest } from '../../services/api'; // API 요청 함수 가져오기
+import MoneyIcon from '../../assets/icon/money.svg'; // MoneyIcon 경로
+
 const RewardSection = () => {
-  const navigate = useNavigate();
+    const [userData, setUserData] = useState(null);
+    const [personalRank, setPersonalRank] = useState(null);
+    const [countryRank, setCountryRank] = useState(null);
 
-  const [userData, setUserData] = useState(null);
-  const [personalRank, setPersonalRank] = useState(null);
-  const [countryRank, setCountryRank] = useState(null);
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                // 프로필 데이터 요청
+                const profileResponse = await getRequest('/users/profile');
+                const user = profileResponse.data.success.user;
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        // 프로필 데이터 요청
-        const profileResponse = await getRequest("/users/profile");
-        const user = profileResponse.data.success.user;
+                // 개인 순위 요청
+                const personalRankResponse = await getRequest('/users/rank/user');
+                const personalRank = personalRankResponse.data.success.rank;
 
-        // 개인 순위 요청
-        const personalRankResponse = await getRequest("/users/rank/user");
-        const personalRank = personalRankResponse.data.success.rank;
+                // 국가 순위 요청
+                const countryRankResponse = await getRequest('/users/rank/user/country');
+                const countryRank = countryRankResponse.data.success.rank;
 
-        // 국가 순위 요청
-        const countryRankResponse = await getRequest(
-          "/users/rank/user/country"
-        );
-        const countryRank = countryRankResponse.data.success.rank;
+                setUserData(user);
+                setPersonalRank(personalRank);
+                setCountryRank(countryRank);
+            } catch (error) {
+                console.error('데이터 가져오기 오류:', error);
+            }
+        };
 
-        setUserData(user);
-        setPersonalRank(personalRank);
-        setCountryRank(countryRank);
-      } catch (error) {
-        console.error("데이터 가져오기 오류:", error);
-      }
-    };
+        fetchData();
+    }, []);
 
-    fetchData();
-  }, []);
+    if (!userData || personalRank === null || countryRank === null) {
+        return <div>로딩 중...</div>; // 데이터 로딩 중 표시
+    }
 
-  if (!userData || personalRank === null || countryRank === null) {
-    return <div>로딩 중...</div>; // 데이터 로딩 중 표시
-  }
+    const { nickname, point } = userData;
 
-  const { nickname, point } = userData;
-
-  return (
-    <Container onClick={() => navigate("/ranking")}>
-      <RewardText>
-        현재 <strong>{nickname}님</strong>의 리워드는 <Point>{point}</Point> 점
-      </RewardText>
-      <HorizontalDivider />
-      <Ranks>
-        <RankContainer>
-          <Rank>
-            국가 순위 <RankValue>{countryRank}</RankValue>위
-          </Rank>
-        </RankContainer>
-        <VerticalDivider />
-        <RankContainer>
-          <Rank>
-            개인 순위 <RankValue>{personalRank}</RankValue>위
-          </Rank>
-        </RankContainer>
-      </Ranks>
-    </Container>
-  );
+    return (
+        <Container>
+            <MoneyIconWrapper>
+                <MoneyImage src={MoneyIcon} alt="Money Icon" />
+            </MoneyIconWrapper>
+            <RewardText>
+                현재 <strong>{nickname}님</strong>의 리워드는 <Point>{point}</Point> 점
+            </RewardText>
+            <HorizontalDivider />
+            <Ranks>
+                <RankContainer>
+                    <Rank>
+                        국가 순위 <RankValue>{countryRank}</RankValue>위
+                    </Rank>
+                </RankContainer>
+                <VerticalDivider />
+                <RankContainer>
+                    <Rank>
+                        개인 순위 <RankValue>{personalRank}</RankValue>위
+                    </Rank>
+                </RankContainer>
+            </Ranks>
+        </Container>
+    );
 };
 
 export default RewardSection;
 
 // Styled-components
 const Container = styled.div`
-  cursor: pointer;
-  width: 96%;
-  max-width: 360px;
-  background-color: #fff;
-  border-radius: 12px;
-  padding: 20px;
-  box-shadow: 0px 0px 8px rgba(117, 117, 117, 0.15);
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+    width: 96%;
+    max-width: 360px;
+    background-color: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0px 0px 8px rgba(117, 117, 117, 0.15);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    position: relative; /* 아이콘 위치를 절대적으로 배치할 수 있도록 설정 */
+    overflow: hidden;
+`;
+
+const MoneyIconWrapper = styled.div`
+    position: absolute;
+    top: -5px; /* 아이콘의 상단 위치 조정 */
+    left: -5px; /* 아이콘의 왼쪽 위치 조정 */
+    z-index: 0; /* 컨테이너 뒤로 배치 */
+`;
+
+const MoneyImage = styled.img`
+    width: 80px; /* 아이콘 크기 조정 */
+    height: 80px;
+    opacity: 1; /* 아이콘을 투명하게 만들어 텍스트가 잘 보이도록 설정 */
 `;
 
 const RewardText = styled.div`

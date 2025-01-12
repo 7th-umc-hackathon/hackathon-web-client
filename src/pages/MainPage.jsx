@@ -1,28 +1,34 @@
-// PreRelayMainPage.js
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import axios from 'axios';
 import RewardSection from '../components/PreRelayMainPage/RewardSection';
 import MissionSection from '../components/PreRelayMainPage/MissionSection';
 import MissionProgressComponent from '../components/PreRelayMainPage/MissionProgressComponent';
-import { getRequest } from '../services/api';
 
-const PreRelayMainPage = () => {
+const MainPage = () => {
     const [relayStatus, setRelayStatus] = useState(null);
     const [missionTitle, setMissionTitle] = useState('');
+    const accessToken = localStorage.getItem('accessToken');
 
     useEffect(() => {
         const fetchRelayStatus = async () => {
             try {
-                const response = await getRequest('/users/profile');
+                const response = await axios.get('http://test2.shop:42021/users/profile', {
+                    headers: {
+                        Authorization: `${accessToken}`
+                    }
+                });
                 const userRelay = response.data.success.user.relay_users.find(
-                    (relay) => relay.status === 'in_progress'
+                    (relay) => relay.status === 'waiting' || relay.status === 'in_progress'
                 );
 
                 if (userRelay) {
-                    setRelayStatus('in_progress');
-                    setMissionTitle('진행 중인 미션'); // Replace with actual title if available
+                    setRelayStatus(userRelay.status);
+                    setMissionTitle('진행 중인 미션');
+                    console.log('Current relay status:', userRelay.status);
                 } else {
                     setRelayStatus('none');
+                    console.log('No relay in progress');
                 }
             } catch (error) {
                 console.error('Relay 상태 가져오기 오류:', error);
@@ -32,14 +38,18 @@ const PreRelayMainPage = () => {
         fetchRelayStatus();
     }, []);
 
+    useEffect(() => {
+        console.log('Updated Relay Status:', relayStatus);
+    }, [relayStatus]);
+
     if (relayStatus === null) {
-        return <Loading>로딩 중...</Loading>; // 데이터 로딩 중 표시
+        return <Loading>로딩 중...</Loading>;
     }
 
     return (
         <Container>
             <RewardSection />
-            {relayStatus === 'in_progress' ? (
+            {(relayStatus === 'waiting' || relayStatus === 'in_progress') ? (
                 <MissionProgressComponent missionTitle={missionTitle} />
             ) : (
                 <MissionSection />
@@ -48,9 +58,8 @@ const PreRelayMainPage = () => {
     );
 };
 
-export default PreRelayMainPage;
+export default MainPage;
 
-// Styled-components
 const Container = styled.div`
     display: flex;
     flex-direction: column;
