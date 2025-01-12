@@ -2,8 +2,11 @@ import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { getRequest } from "../../services/api"; // API 요청 함수 가져오기
 import MoneyIcon from "../../assets/icon/money.svg"; // MoneyIcon 경로
+import { useNavigate } from "react-router";
 
 const RewardSection = () => {
+  const navigate = useNavigate();
+
   const [userData, setUserData] = useState(null);
   const [personalRank, setPersonalRank] = useState(null);
   const [countryRank, setCountryRank] = useState(null);
@@ -43,7 +46,7 @@ const RewardSection = () => {
   const { nickname, point } = userData;
 
   return (
-    <Container>
+    <Container onClick={() => navigate("/ranking")}>
       <MoneyIconWrapper>
         <MoneyImage src={MoneyIcon} alt="Money Icon" />
       </MoneyIconWrapper>
@@ -83,6 +86,7 @@ const Container = styled.div`
   gap: 16px;
   position: relative; /* 아이콘 위치를 절대적으로 배치할 수 있도록 설정 */
   overflow: hidden;
+  cursor: pointer;
 `;
 
 const MoneyIconWrapper = styled.div`
