@@ -38,7 +38,7 @@ export default function CapturePage() {
             formData.append('image', capturedImage);
             formData.append('mission', '페트병 3개 줍기'); // TODO: localStorage로 사용자의가장 최근 미션 내용 꺼내서 삽입하여 요청 보내기
 
-            const response = await fetch('http://test2.shop:42021/relays/mission/complete', {
+            const response = await fetch('https://hack.umc.skyofseoul.synology.me/relays/mission/complete', {
                 method: 'POST',
                 body: formData,
             });
@@ -46,7 +46,7 @@ export default function CapturePage() {
             const result = await response.json();
 
             // 정확하게 result 값을 비교
-            if (result.success && result.success.result === "True") {
+            if (result.success && result.success.result === 'True') {
                 setIsOkModalOpen(true);
             } else {
                 setIsFailModalOpen(true);
@@ -58,7 +58,6 @@ export default function CapturePage() {
             setIsFailModalOpen(true);
         }
     };
-
 
     return (
         <Container>
@@ -89,19 +88,15 @@ export default function CapturePage() {
                     </WebcamContainer>
                     <BottomBar>
                         <CaptureButton onClick={captureImage}>
-                            <StyledImg src={CaptureButtonIcon} width='5rem' height='5rem' />
+                            <StyledImg src={CaptureButtonIcon} width="5rem" height="5rem" />
                         </CaptureButton>
                     </BottomBar>
                 </>
             )}
 
-            {isFailModalOpen && (
-                <FailureModal isOpen={isFailModalOpen} onClose={handleCloseFailModal} />
-            )}
+            {isFailModalOpen && <FailureModal isOpen={isFailModalOpen} onClose={handleCloseFailModal} />}
 
-            {isOkModalOpen && (
-                <SuccessModal isOpen={isOkModalOpen} onClose={handleCloseOkModal} />
-            )}
+            {isOkModalOpen && <SuccessModal isOpen={isOkModalOpen} onClose={handleCloseOkModal} />}
         </Container>
     );
 }
