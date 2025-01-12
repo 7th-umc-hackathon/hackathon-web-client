@@ -3,17 +3,15 @@ import styled from 'styled-components';
 
 const HistoryItem = () => {
     const [relayData, setRelayData] = useState([]);
-    const accessToken =
-        'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJuYW1lIjoi67CV6rK97Jq0Iiwibmlja25hbWUiOiLtlZjripgiLCJpYXQiOjE3MzY2MzU0MTcsImV4cCI6MTczNjY3MTQxN30.zHl-O30C4xDdisyy8a2D7ODG1n5-9EfhOmX6DqwAH4g';
 
     useEffect(() => {
-        const fetchRelayData = async () => {
+        const fetchData = async () => {
             try {
-                const response = await fetch('http://test2.shop:42021/relays/history/user', {
+                const response = await fetch('/relays/history/user', {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
-                        Authorization: accessToken,
+                        Authorization: `${localStorage.getItem('accessToken')}`,
                     },
                 });
 
@@ -23,55 +21,49 @@ const HistoryItem = () => {
 
                 const data = await response.json();
 
-                if (data.resultType === 'SUCCESS') {
-                    const formattedData = data.success.relay_user_.map((item) => ({
-                        status: item.status,
-                        updatedAt: item.updated_at,
-                        remaining: item.remaining || '3',
-                        reason: item.reason || '시간 내 미제출',
-                    }));
-                    setRelayData(formattedData);
-                } else {
-                    console.error('데이터 가져오기 실패:', data.error);
+                if (!data.success || !data.success.relay_user_ || data.success.relay_user_.length === 0) {
+                    throw new Error('Relay history not found');
                 }
+
+                const formattedData = data.success.relay_user_.map((item) => ({
+                    status: item.status,
+                    updatedAt: item.updated_at,
+                    remaining: item.remaining || '3',
+                    reason: item.reason || '시간 내 미제출',
+                }));
+
+                setRelayData(formattedData);
             } catch (error) {
-                console.error('데이터 요청 중 오류 발생:', error);
+                console.error('데이터 가져오기 오류:', error);
             }
         };
 
-        fetchRelayData();
+        fetchData();
     }, []);
 
-    if (!relayData.length) {
+    if (relayData.length === 0) {
         return <div>로딩 중...</div>;
     }
 
-    return (
-        <>
-            {relayData.map((data, index) => (
-                <ItemContainer key={index}>
-                    <StatusBadge status={data.status}>
-                        {data.status === 'in_progress' && '진행중'}
-                        {data.status === 'success' && '완주'}
-                        {data.status === 'failed' && '실패'}
-                    </StatusBadge>
+    return relayData.map(({ status, updatedAt, remaining, reason }, index) => (
+        <ItemContainer key={index}>
+            <StatusBadge status={status}>
+                {status === 'in_progress' && '진행중'}
+                {status === 'success' && '완주'}
+                {status === 'failed' && '실패'}
+            </StatusBadge>
 
-                    <Content>
-                        {data.status === 'in_progress' && <p>내 이후 {data.remaining}명이 성공 시 리워드 지급</p>}
-                        {data.status === 'success' && (
-                            <>
-                                <CompletionDateStyle>
-                                    {new Date(data.updatedAt).toLocaleDateString('ko-KR')}
-                                </CompletionDateStyle>
-                                <RewardButton>리워드 받기</RewardButton>
-                            </>
-                        )}
-                        {data.status === 'failed' && <p>{data.reason}</p>}
-                    </Content>
-                </ItemContainer>
-            ))}
-        </>
-    );
+            <Content>
+                {status === 'in_progress' && <p className="info">내 이후 {remaining}명이 성공 시 리워드 지급</p>}
+                {status === 'success' && updatedAt && (
+                    <CompletionDateStyle>{new Date(updatedAt).toLocaleDateString('ko-KR')}</CompletionDateStyle>
+                )}
+                {status === 'success' && <RewardButton>리워드 받기</RewardButton>}
+                {status === 'success' && <RewardButton disabled>리워드 받음</RewardButton>}
+                {status === 'failed' && <p className="info">{reason}</p>}
+            </Content>
+        </ItemContainer>
+    ));
 };
 
 export default HistoryItem;
@@ -91,19 +83,24 @@ const StatusBadge = styled.div`
     border-radius: 4px;
     width: 80px;
     text-align: center;
-    background-color: ${({ status }) => (status === 'in_progress' ? 'gray' : status === 'success' ? 'green' : 'red')};
-    color: white;
+    background-color: ${({ status }) =>
+        status === 'in_progress' ? 'var(--gray3-color)' : status === 'success' ? 'var(--main-color)' : 'red'};
+    align-self: flex-start;
 `;
 
 const Content = styled.div`
+    position: relative;
     flex: 1;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
     gap: 8px;
 `;
 
 const CompletionDateStyle = styled.p`
-    margin: 0;
+    margin-left: 30px;
+    text-align: center;
 `;
 
 const RewardButton = styled.button`
@@ -111,12 +108,15 @@ const RewardButton = styled.button`
     font-size: 10px;
     border: none;
     border-radius: 4px;
-    background-color: green;
-    color: white;
+    background-color: var(--main-color);
     cursor: pointer;
 
     &:disabled {
         background-color: #ccc;
         cursor: not-allowed;
+    }
+
+    &:hover:enabled {
+        filter: brightness(0.5);
     }
 `;

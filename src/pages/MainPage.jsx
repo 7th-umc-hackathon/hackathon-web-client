@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
-import RewardSection from '../components/PreRelayMainPage/RewardSection';
-import MissionSection from '../components/PreRelayMainPage/MissionSection';
-import MissionProgressComponent from '../components/PreRelayMainPage/MissionProgressComponent';
+import RewardSection from '../components/MainPage/RewardSection';
+import MissionSection from '../components/MainPage/MissionSection';
+import MissionProgressComponent from '../components/MainPage/MissionProgressComponent';
 
 const MainPage = () => {
     const [relayStatus, setRelayStatus] = useState(null);
@@ -13,10 +13,10 @@ const MainPage = () => {
     useEffect(() => {
         const fetchRelayStatus = async () => {
             try {
-                const response = await axios.get('http://test2.shop:42021/users/profile', {
+                const response = await axios.get('https://hack.umc.skyofseoul.synology.me/users/profile', {
                     headers: {
-                        Authorization: `${accessToken}`
-                    }
+                        Authorization: `${accessToken}`,
+                    },
                 });
                 const userRelay = response.data.success.user.relay_users.find(
                     (relay) => relay.status === 'waiting' || relay.status === 'in_progress'
@@ -49,7 +49,7 @@ const MainPage = () => {
     return (
         <Container>
             <RewardSection />
-            {(relayStatus === 'waiting' || relayStatus === 'in_progress') ? (
+            {relayStatus === 'waiting' || relayStatus === 'in_progress' ? (
                 <MissionProgressComponent missionTitle={missionTitle} />
             ) : (
                 <MissionSection />

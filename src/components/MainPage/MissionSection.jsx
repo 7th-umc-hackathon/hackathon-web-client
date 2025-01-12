@@ -12,12 +12,13 @@ const MissionSection = () => {
     const [missionData, setMissionData] = useState(null);
     const [isMissionConfirmed, setIsMissionConfirmed] = useState(false);
     const navigate = useNavigate();
+
     const fetchNewMission = async () => {
         try {
-            const response = await getRequest('/relays');
-            console.log('API 응답:', response); // 전체 응답 확인
+            const response = await getRequest('/relays'); // API 요청
+            console.log('API 응답:', response); // 응답 확인
             if (response.data.resultType === 'SUCCESS') {
-                setMissionData(response.data); // 성공 시 데이터 저장
+                setMissionData(response.data.success.relay); // 성공 시 relay 데이터 저장
                 setIsMissionSelected(true);
             } else if (response.data.resultType === 'FAIL') {
                 console.warn('미션 실패 이유:', response.data.error.reason); // 실패 사유 로그 출력
@@ -49,6 +50,7 @@ const MissionSection = () => {
                 <MissionDetail>
                     <MissionHeader>이 미션은 어떤가요?</MissionHeader>
                     <MissionTitle>{missionData.mission}</MissionTitle>
+
                     <MissionInfo>
                         내 이후로
                         <MissionSelect value={selectedPeople} onChange={(e) => setSelectedPeople(e.target.value)}>
@@ -199,10 +201,6 @@ const MissionSelect = styled.select`
     color: #4f4f4f;
     text-align: center;
     appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24'%3E%3Cpath fill='%234f4f4f' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 10px center;
-    background-size: 12px;
 `;
 
 const Buttons = styled.div`
@@ -213,33 +211,21 @@ const Buttons = styled.div`
 `;
 
 const RetryButton = styled.button`
-    display: flex;
-    padding: 7px 40px 8px 40px;
-    justify-content: center;
-    align-items: center;
+    padding: 7px 40px;
+    border: none;
     border-radius: 8px;
     background: #fff;
-    color: var(--Main-Color2, #3ee187);
-    font-family: 'Noto Sans KR';
     font-size: 14px;
     font-weight: 700;
-    &:hover {
-        background-color: #f2f2f2;
-    }
+    color: var(--Main-Color2, #3ee187);
 `;
 
 const ConfirmButton = styled.button`
-    display: flex;
-    padding: 7px 40px 8px 40px;
-    justify-content: center;
-    align-items: center;
+    padding: 7px 40px;
+    border: none;
     border-radius: 8px;
     background: var(--Main-Color2, #3ee187);
-    color: #fff;
-    font-family: 'Noto Sans KR';
     font-size: 14px;
     font-weight: 700;
-    &:hover {
-        background-color: #35c87d;
-    }
+    color: #fff;
 `;

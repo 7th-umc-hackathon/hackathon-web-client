@@ -90,7 +90,7 @@ const SignupPage = () => {
         const email = isCustomEmail ? `${emailLocalPart}@${customEmailDomain}` : `${emailLocalPart}@${emailDomain}`;
 
         try {
-            const response = await fetch('http://test2.shop:42021/auth/register/local', {
+            const response = await fetch('https://hack.umc.skyofseoul.synology.me/auth/register/local', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

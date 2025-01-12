@@ -19,7 +19,7 @@ const SuccessModal = ({ isOpen, onClose }) => {
 
     useEffect(() => {
         if (showCountrySelector) {
-            fetch(`http://test2.shop:42021/relays/${mockRelayId}/next/countries`, {
+            fetch(`https://hack.umc.skyofseoul.synology.me/relays/${mockRelayId}/next/countries`, {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
                 },
