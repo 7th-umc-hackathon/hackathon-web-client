@@ -18,7 +18,7 @@ const MissionSection = () => {
             const response = await getRequest('/relays'); // API 요청
             console.log('API 응답:', response); // 응답 확인
             if (response.data.resultType === 'SUCCESS') {
-                setMissionData(response.data.success); // 성공 시 데이터 저장
+                setMissionData(response.data.success.relay); // 성공 시 relay 데이터 저장
                 setIsMissionSelected(true);
             } else if (response.data.resultType === 'FAIL') {
                 console.warn('미션 실패 이유:', response.data.error.reason); // 실패 사유 로그 출력
@@ -50,17 +50,7 @@ const MissionSection = () => {
                 <MissionDetail>
                     <MissionHeader>이 미션은 어떤가요?</MissionHeader>
                     <MissionTitle>{missionData.mission}</MissionTitle>
-                    {missionData.contries ? ( // missionData.contries가 존재하는지 확인
-                        <MissionInfo>
-                            국가: {missionData.contries.common_name} ({missionData.contries.cca3})
-                            <Flag
-                                src={missionData.contries.national_flag_url}
-                                alt={`${missionData.contries.common_name} Flag`}
-                            />
-                        </MissionInfo>
-                    ) : (
-                        <MissionInfo>국가 정보가 없습니다.</MissionInfo>
-                    )}
+
                     <MissionInfo>
                         내 이후로
                         <MissionSelect value={selectedPeople} onChange={(e) => setSelectedPeople(e.target.value)}>
@@ -196,12 +186,6 @@ const MissionInfo = styled.div`
     font-size: 12px;
     font-weight: 500;
     margin-top: 15px;
-`;
-
-const Flag = styled.img`
-    margin-left: 10px;
-    width: 30px;
-    height: auto;
 `;
 
 const MissionSelect = styled.select`
